@@ -4,9 +4,9 @@ const studentSchema = new Schema<IStudent>({
   ID: { type: String, required: true, unique: true },
   StudentName: { type: String, required: true },
   Gender: { type: String, required: true },
-  Category: { type: String, required: false },
+  Category: { type: String, required: true },
   // DOB: { type: Date, required: true },
-  FatherName: { type: String, required: false },
+  FatherName: { type: String, required: true },
   BATCH: { type: String, required: true },
 });
 

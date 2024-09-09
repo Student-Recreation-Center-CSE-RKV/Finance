@@ -33,6 +33,7 @@ interface DueNo {
   Credit?: string;
   Debit?: string;
 }
+
 interface Installment {
   ReceiptNo: string;
   Date: string;
@@ -40,9 +41,25 @@ interface Installment {
 }
 
 interface StudentFeeRecord {
+  BATCH: string;
   ID: string;
   installments: Installment[];
   Total: number;
+}
+export interface loanDetails {
+  year: string;
+  Loan: number;
+  Others: number;
+  Total: number;
+}
+export interface Loan {
+  ID: string;
+  grandTotal: number;
+  refund: {
+    RefundP1: number;
+    RefundP1_1: number;
+  };
+  acYears: loanDetails[];
 }
 
 const excelUtils = {
@@ -130,6 +147,7 @@ const excelUtils = {
       throw new Error("Failed to parse Excel file.");
     }
   },
+
   async parseStudentsDataToExcel(filePath: string): Promise<StudentData[]> {
     try {
       const workbook = XLSX.readFile(filePath);
@@ -139,21 +157,13 @@ const excelUtils = {
       const rows: any[] = XLSX.utils.sheet_to_json(sheet);
       const studentData: StudentData[] = [];
       rows.map((item) => {
-        // console.log({
-        //   ID: item["ROLL No."],
-        //   StudentName: item["NAME AS PER SSC RECORDS"],
-        //   FatherName: item["Father Name"],
-        //   Category: item["CASTE"],
-        //   Gender: item["GENDER"],
-        //   BATCH: item["BATCH"],
-        // });
         studentData.push({
           ID: item["ROLL No."],
           StudentName: item["NAME AS PER SSC RECORDS"],
-          FatherName: item["Father Name"],
-          Category: item["CASTE"],
-          Gender: item["GENDER"],
-          BATCH: item["BATCH"],
+          FatherName: item["Father Name"] ? item["Father Name"] : "NA",
+          Category: item["CASTE"] ? item["CASTE"] : "NA",
+          Gender: item["GENDER"] ? item["GENDER"] : "NA",
+          BATCH: item["BATCH"] ? item["BATCH"] : "NA",
         });
       });
 
@@ -162,6 +172,189 @@ const excelUtils = {
       throw new Error("Failed to parse Excel file.");
     }
   },
+  async parseStudentFee(filePath: string) {
+    try {
+      const workbook = XLSX.readFile(filePath);
+      const sheet = workbook.Sheets["Fees"];
+
+      const rows: any[] = XLSX.utils.sheet_to_json(sheet);
+
+      const studentData: StudentFeeRecord[] = [];
+      rows.map((row, index) => {
+        if (index > 1) {
+          const studentRecord: StudentFeeRecord = {
+            ID: row["I.D NO"],
+            BATCH: row["BATCH"],
+            installments: [],
+            Total: row["Total"],
+          };
+
+          for (const key in row) {
+            if (key.match("Installment")) {
+              const installmentIndex = key.match(/\d+/);
+
+              if (installmentIndex) {
+                const index = parseInt(installmentIndex[0], 10);
+                const receiptNo = row[key];
+                const date = row[`__EMPTY_${2 * (index - 1) + 7}`];
+                const amount = row[`__EMPTY_${2 * (index - 1) + 8}`];
+                studentRecord.installments.push({
+                  ReceiptNo: receiptNo,
+                  Amount: amount,
+                  Date: date,
+                });
+              }
+            }
+          }
+          studentData.push(studentRecord);
+        }
+      });
+      return studentData;
+    } catch (error) {
+      throw new Error("Failed to parse Excel file.");
+    }
+  },
+
+  async parseStudentSch(filePath: string) {
+    try {
+      const workbook = XLSX.readFile(filePath);
+      const sheet = workbook.Sheets["SCH"];
+
+      const rows: any[] = XLSX.utils.sheet_to_json(sheet);
+
+      const studentData: StudentFeeRecord[] = [];
+      rows.map((row, index) => {
+        if (index > 0) {
+          const structuredData: any = {
+            ID: row["ROLL No."],
+            BATCH: row["BATCH"],
+            TotalSch: row["Total Sch"],
+            OtherSch: row["Other Sch"] ? row["Other Sch"] : "NA",
+            FeePaidbyTheStudent: row["Fee Paid by the Student"]
+              ? row["Fee Paid by the Student"]
+              : "NA",
+            TotalFeePaid: row["Total Fee Paid"] ? row["Total Fee Paid"] : "NA",
+            ActualPay: row["Actuval pay"] ? row["Actuval pay"] : "NA",
+            RemainingBalance: row["Remaining Balance"]
+              ? row["Remaining Balance"]
+              : "NA",
+            RefundAmount: row["Refund Amount"] ? row["Refund Amount"] : "NA",
+            academicYears: [],
+          };
+          for (const key in row) {
+            if (key.match(/^\d{4}-\d{2}$/)) {
+              const relatedKey = `${key}_1`;
+              structuredData.academicYears.push({
+                Year: key,
+                ActualPay: row[key],
+                SchReceived: row[relatedKey] || null, // Use null if relatedKey doesn't exist
+              });
+            }
+          }
+          studentData.push(structuredData);
+        }
+      });
+      return studentData;
+    } catch (error) {
+      throw new Error("Failed to parse Excel file.");
+    }
+  },
+  async parseStudentLoan(filePath: string): Promise<Loan[]> {
+    try {
+      const workbook = XLSX.readFile(filePath);
+      const sheet = workbook.Sheets["Loan&Others"];
+
+      const rows = XLSX.utils.sheet_to_json(sheet);
+
+      const studentSch: Loan[] = [];
+
+      rows.forEach((row: any, index) => {
+        // console.log(row["ROLL No."]);
+        if (index > 0) {
+          const result: Loan = {
+            ID: row["ROLL No."],
+            grandTotal: row["Grand Total"],
+            refund: {
+              RefundP1: row["Refund P1"],
+              RefundP1_1: row["Refund P1_1"],
+            },
+            acYears: [],
+          };
+          let even = 2;
+          let odd = 3;
+          // console.log(row);
+          for (const key in row) {
+            if (/\d{4}-\d{2}/.test(key)) {
+              const year = key;
+              result.acYears.push({
+                year: year,
+                Loan: row[year],
+                Others: row[`__EMPTY_${even}`],
+                Total: row[`__EMPTY_${odd}`],
+              });
+              even += 2;
+              odd += 2;
+            }
+          }
+          studentSch.push(result);
+        }
+      });
+
+      return studentSch;
+    } catch (error) {
+      throw new Error("Failed to parse Excel file.");
+    }
+  },
 };
 
 export { excelUtils };
+// {
+//   'S.No': 94,
+//   'I.D NO': 'R081094',
+//   'Student Name': 'NALAMALA KRISHNAVENI',
+//   'Father Name': 'Lakshmi Narayana',
+//   BATCH: 2008,
+//   Gender: 'G',
+//   Category: 'OC',
+//   'Admission Fee': 0,
+//   __EMPTY_1: 0,
+//   __EMPTY_2: 0,
+//   'Re Admission Fee': 0,
+//   __EMPTY_3: 0,
+//   __EMPTY_4: 0,
+//   'Caution Deposit': 0,
+//   __EMPTY_5: 0,
+//   __EMPTY_6: 0,
+//   '1st Installment': 4439,
+//   __EMPTY_7: '28.02.2010',
+//   __EMPTY_8: 3500,
+//   '2nd Installment': 1664,
+//   __EMPTY_9: '21.08.2015',
+//   __EMPTY_10: 13164,
+//   Total: 16664
+// },
+// {
+//   'S.No': 95,
+//   'I.D NO': 'R081095',
+//   'Student Name': 'MAROJU PRIYANKA',
+//   'Father Name': 'Ratnachari',
+//   BATCH: 2008,
+//   Gender: 'B',
+//   Category: 'BC-A',
+//   'Admission Fee': 0,
+//   __EMPTY_1: 0,
+//   __EMPTY_2: 0,
+//   'Re Admission Fee': 0,
+//   __EMPTY_3: 0,
+//   __EMPTY_4: 0,
+//   'Caution Deposit': 0,
+//   __EMPTY_5: 0,
+//   __EMPTY_6: 0,
+//   '1st Installment': 4438,
+//   __EMPTY_7: '28.02.2010',
+//   __EMPTY_8: 3500,
+//   '2nd Installment': 3106,
+//   __EMPTY_9: '11.04.2016',
+//   __EMPTY_10: 13164,
+//   Total: 16664
+// },

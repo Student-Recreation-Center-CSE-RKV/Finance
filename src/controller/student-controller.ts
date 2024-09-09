@@ -2,7 +2,7 @@ import { studentServices } from "../services";
 import { Request, response, Response } from "express";
 import XLSX from "xlsx";
 import { excelUtils } from "../utils/excelUtils";
-import { IStudent } from "../models/models";
+import feeServices from "../services/fee-service";
 interface ReceiptDetail {
   ReceiptNo?: string;
   Date?: string;
@@ -56,6 +56,17 @@ const studentController = {
     try {
       const response = await studentServices.getStudentById(req.params.id);
       return res.status(200).json(response);
+    } catch (error) {
+      throw error;
+    }
+  },
+  async getStudentFeeDetails(req: Request, res: Response) {
+    try {
+      const student = await studentServices.getStudentById(req.params.id);
+      const tutionFee = await feeServices.getStudentFee(req.params.id);
+      const sch = await feeServices.getStudentSch(req.params.id);
+      const loan = await feeServices.getStudentLoan(req.params.id);
+      return res.status(200).json({ student, tutionFee, sch, loan });
     } catch (error) {
       throw error;
     }
