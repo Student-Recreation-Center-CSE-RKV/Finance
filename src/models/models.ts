@@ -31,3 +31,48 @@ export interface IBankMs extends Document {
   Credit?: number;
   Debit?: number;
 }
+export interface Reciept extends Document {
+  ReceiptNo?: string;
+  Amount?: number;
+  Date?: string;
+}
+export interface Fee extends Document {
+  ID?: string;
+  BATCH?: string;
+  Total?: number;
+  installments?: Reciept[];
+}
+
+interface AcademicYear {
+  Year: string;
+  actualPay: number;
+  SchReceived: number | null;
+}
+
+export interface IStudentSch extends Document {
+  ID: string;
+  BATCH: string;
+  TotalSch: number;
+  OtherSch: number;
+  FeePaidbyTheStudent: number;
+  TotalFeePaid: number;
+  ActualPay: number;
+  RemainingBalance: number;
+  RefundAmount: number;
+  academicYears: AcademicYear[];
+}
+export interface IloanDetails extends Document {
+  year: { type: string; required: false };
+  Loan: { type: string; required: false };
+  Others: { type: string; required: false };
+  Total: { type: string; required: false };
+}
+export interface ILoan extends Document {
+  ID: string;
+  grandTotal: number;
+  refund: {
+    RefundP1: { type: number; require: false };
+    RefundP1_1: { type: number; require: false };
+  };
+  acYears: IloanDetails[];
+}

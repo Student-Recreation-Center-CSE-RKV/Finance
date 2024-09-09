@@ -75,18 +75,6 @@ const CrudRepository = {
       throw error;
     }
   },
-  // async uploadBankMs(model: Model<any>, data: any) {
-  //   try {
-
-  //     const response = await model.findOneAndUpdate(query, update, {
-  //       new: true,
-  //       upsert: true,
-  //     });
-  //     return response;
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // },
 };
 
 export default CrudRepository;
