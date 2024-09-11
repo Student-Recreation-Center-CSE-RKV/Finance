@@ -31,6 +31,7 @@ export interface IBankMs extends Document {
   Credit?: number;
   Debit?: number;
 }
+
 export interface Reciept extends Document {
   ReceiptNo?: string;
   Amount?: number;

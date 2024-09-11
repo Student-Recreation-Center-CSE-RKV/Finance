@@ -79,7 +79,7 @@ const studentServices = {
     }
   },
 
-  async udpateStudent(ID: String, data: {}) {
+  async updateStudent(ID: String, data: {}) {
     try {
       const students = await studentRepository.updateStudentById(ID, data);
       if (!students) {
