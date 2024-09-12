@@ -305,6 +305,20 @@ const excelUtils = {
       throw new Error("Failed to parse Excel file.");
     }
   },
+  findDuplicateIds(students: StudentData[]): string[] {
+    const seenIds = new Set<string>();
+    const duplicates = new Set<string>();
+
+    for (const student of students) {
+      if (student.ID && seenIds.has(student.ID)) {
+        duplicates.add(student.ID);
+      } else if (student.ID) {
+        seenIds.add(student.ID);
+      }
+    }
+  
+    return Array.from(duplicates);
+  }
 };
 
 export { excelUtils };
