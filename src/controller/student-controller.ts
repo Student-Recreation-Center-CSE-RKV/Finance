@@ -35,15 +35,24 @@ const studentController = {
       if (req.file) {
         const filePath = req.file.path;
         const response = await excelUtils.parseStudentsDataToExcel(filePath);
-        for (const item of response) {
-          try {
-            const response = await studentServices.updloadStudentsData(item);
-            items.push(response);
-          } catch (error) {
-            throw error;
+        const array = excelUtils.findDuplicateIds(response);
+        if (array.length == 0) {
+          for (const item of response) {
+            try {
+              const response = await studentServices.updloadStudentsData(item);
+              items.push(response);
+            } catch (error) {
+              throw error;
+            }
           }
-        }
-        res.status(500).send(items);
+          res.status(200).send(items);
+        } else
+          res
+            .status(500)
+            .send({
+              message:
+                "Contains Duplicates Remove those in excel. They are " + array,
+            });
       }
     } catch (error) {
       console.log(error);
@@ -97,7 +106,7 @@ const studentController = {
   async updateStudent(req: Request, res: Response) {
     try {
       const body = req.body;
-      const response = await studentServices.udpateStudent(req.params.id, body);
+      const response = await studentServices.updateStudent(req.params.id, body);
       return res.status(200).json(response);
     } catch (error) {
       res.status(500).json({ error: error });
