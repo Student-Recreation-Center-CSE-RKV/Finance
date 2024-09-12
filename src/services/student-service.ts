@@ -28,9 +28,9 @@ const studentServices = {
     try {
       const student = await studentRepository.getStudentById(ID);
       if (!student) {
-        return { message: "Student not found" };
+        return { status: 404, message: "Student not found" };
       }
-      return student;
+      return { status: 200, student };
     } catch (error) {
       throw error;
     }
