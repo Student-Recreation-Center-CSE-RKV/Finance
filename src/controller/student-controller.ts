@@ -39,7 +39,8 @@ const studentController = {
         if (array.length == 0) {
           for (const item of response) {
             try {
-              const response = await studentServices.updloadStudentsData(item);
+              console.log(item)
+              const response = await studentServices.uploadStudentsData(item);
               items.push(response);
             } catch (error) {
               throw error;
@@ -47,12 +48,16 @@ const studentController = {
           }
           res.status(200).send(items);
         } else
+        {
           res
             .status(500)
             .send({
               message:
                 "Contains Duplicates Remove those in excel. They are " + array,
             });
+
+        }
+          
       }
     } catch (error) {
       console.log(error);
@@ -71,7 +76,10 @@ const studentController = {
   },
   async getStudentFeeDetails(req: Request, res: Response) {
     try {
-      const student = await studentServices.getStudentById(req.params.id);
+      const student: any = await studentServices.getStudentById(req.params.id);
+      if (student.status === 404) {
+        return res.status(404).json({ message: "student not found" });
+      }
       const tutionFee = await feeServices.getStudentFee(req.params.id);
       const sch = await feeServices.getStudentSch(req.params.id);
       const loan = await feeServices.getStudentLoan(req.params.id);

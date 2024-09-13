@@ -14,5 +14,5 @@ const tutionFeeSchema = new Schema<Fee>({
   ],
 });
 
-const TutionFee = model("TutionFeeSchema", tutionFeeSchema);
-export default TutionFee;
+const TutionFeeSchema = model("TutionFeeSchema", tutionFeeSchema);
+export default TutionFeeSchema;

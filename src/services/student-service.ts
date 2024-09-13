@@ -10,7 +10,7 @@ interface FilterData {
 }
 
 const studentServices = {
-  async updloadStudentsData(data: {}) {
+  async uploadStudentsData(data: {}) {
     try {
       return await studentRepository.uploadStudentsData(data);
     } catch (error) {
