@@ -10,7 +10,10 @@ const feeController = {
         const response = await excelUtils.parseStudentFee(filePath);
         for (const item of response) {
           try {
-            const response = await feeServices.uploadStrudentTutionFee(item);
+            let ID=""
+            if(item.ID)
+              ID=item.ID
+            const response = await feeServices.uploadStudentTutionFee(ID,item);
             items.push(response);
           } catch (error) {
             throw error;
@@ -31,7 +34,10 @@ const feeController = {
         const response = await excelUtils.parseStudentSch(filePath);
         for (const item of response) {
           try {
-            const response = await feeServices.uploadStudentSch(item);
+              let ID=""
+              if(item.ID)
+                ID=item.ID
+            const response = await feeServices.uploadStudentSch(ID,item);
             items.push(response);
           } catch (error) {
             throw error;
@@ -58,8 +64,11 @@ const feeController = {
         {
           for (const item of response) {
             try {
+              let ID=""
+              if(item.ID)
+                ID=item.ID
               // console.log("in controller: ", item);
-              const response = await feeServices.uploadStudentLoan(item);
+              const response = await feeServices.uploadStudentLoan(ID,item);
               items.push(response);
             } catch (error) {
               throw error;

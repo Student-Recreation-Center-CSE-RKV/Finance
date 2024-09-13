@@ -1,23 +1,23 @@
 import CrudRepository from "./crud-repository";
 import { TutionFee, StudentSch, Loan } from "../models";
 const feeRepository = {
-  async uploadStudentFee(data: {}) {
+  async uploadStudentFee(ID:String,data: {}) {
     try {
-      return await CrudRepository.uploadExcel(TutionFee, data);
+      return await CrudRepository.update(TutionFee,ID, data);
     } catch (error) {
       throw error;
     }
   },
-  async uploadStudentSch(data: {}) {
+  async uploadStudentSch(ID:String,data: {}) {
     try {
-      return await CrudRepository.uploadExcel(StudentSch, data);
+      return await CrudRepository.update(StudentSch,ID, data);
     } catch (error) {
       throw error;
     }
   },
-  async uploadStudentLoan(data: {}) {
+  async uploadStudentLoan(ID:String,data: {}) {
     try {
-      return await CrudRepository.uploadExcel(Loan, data);
+      return await CrudRepository.update(Loan,ID, data);
     } catch (error) {
       throw error;
     }

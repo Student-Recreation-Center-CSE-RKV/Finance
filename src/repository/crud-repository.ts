@@ -56,11 +56,20 @@ const CrudRepository = {
   async update(model: Model<any>, ID: String, data: {}) {
     console.log("in repo:", ID, data);
     try {
-      const response = await model.findOneAndUpdate({ID}, data, {
-        new: true,
-      });
-      console.log("in repo res:", response);
-      return response;
+      const existingDocument = await model.findOne({ ID });
+      if (existingDocument) {
+        const response = await model.findOneAndUpdate({ ID }, data, {
+          new: true,
+        });
+        console.log("in repo res:", response);
+        return response;
+      }
+      else {
+        const result = await model.create(data);
+        return result;
+      }
+
+
     } catch (error) {
       return error;
     }
@@ -69,6 +78,7 @@ const CrudRepository = {
   async uploadExcel(model: Model<any>, data: {}) {
     // console.log("in repo: ", data);
     try {
+      console.log(data)
       const response = await model.create(data);
       return response;
     } catch (error) {

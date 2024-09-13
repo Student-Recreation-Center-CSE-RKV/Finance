@@ -39,8 +39,10 @@ const studentController = {
         if (array.length == 0) {
           for (const item of response) {
             try {
-              console.log(item)
-              const response = await studentServices.uploadStudentsData(item);
+              let ID=""
+              if(item.ID)
+                ID=item.ID
+              const response = await studentServices.uploadStudentsData(ID,item);
               items.push(response);
             } catch (error) {
               throw error;
