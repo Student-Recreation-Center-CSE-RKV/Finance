@@ -4,6 +4,7 @@ import { Request } from "express";
 import excelController from "../../controller/excel-controller";
 import studentController from "../../controller/student-controller";
 import feeController from "../../controller/fee-controller";
+import bankController from "../../controller/bank-controller";
 // const {
 //   validateUserAuth,
 //   validateisAdminId,
@@ -39,25 +40,26 @@ v1Routes.post(
 );
 v1Routes.post("/mapDue", excelController.mapDue);
 v1Routes.post(
-  "/upload/tution/student",
+  "/upload/student/details",
   upload.single("file"),
   studentController.uploadStudentsData
 );
 v1Routes.post(
-  "/upload/fee",
+  "/upload/student/fee",
   upload.single("file"),
   feeController.uploadStudentFee
 );
 v1Routes.post(
-  "/upload/sch",
+  "/upload/student/sch",
   upload.single("file"),
   feeController.uploadStudentSch
 );
 v1Routes.post(
-  "/upload/loan",
+  "/upload/student/loan",
   upload.single("file"),
   feeController.uploadStudentLoanData
 );
+v1Routes.get("/bank/due/:ReceiptNo", bankController.getBankDueDetails);
 // v1Routes.post(
 //   "/upload/hostel/student",
 //   upload.single("file"),
