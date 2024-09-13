@@ -56,7 +56,7 @@ const CrudRepository = {
   async update(model: Model<any>, ID: String, data: {}) {
     console.log("in repo:", ID, data);
     try {
-      const response = await model.findOneAndUpdate({ID}, data, {
+      const response = await model.findOneAndUpdate({ ID }, data, {
         new: true,
       });
       console.log("in repo res:", response);
