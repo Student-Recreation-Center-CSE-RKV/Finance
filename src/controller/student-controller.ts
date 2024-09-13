@@ -3,6 +3,7 @@ import { Request, response, Response } from "express";
 import XLSX from "xlsx";
 import { excelUtils } from "../utils/excelUtils";
 import feeServices from "../services/fee-service";
+import { stat } from "fs";
 interface ReceiptDetail {
   ReceiptNo?: string;
   Date?: string;
@@ -45,18 +46,17 @@ const studentController = {
               throw error;
             }
           }
-          res.status(200).send(items);
+          return res
+            .status(200)
+            .send({ message: "successfully uploaded student Details" });
         } else
-          res
-            .status(500)
-            .send({
-              message:
-                "Contains Duplicates Remove those in excel. They are " + array,
-            });
+          return res.status(404).send({
+            message: "Duplicates found. " + array,
+          });
       }
     } catch (error) {
       console.log(error);
-      res.status(500).send(error);
+      return res.status(500).send(error);
     }
   },
 
@@ -64,14 +64,20 @@ const studentController = {
     console.log(req.params.id);
     try {
       const response = await studentServices.getStudentById(req.params.id);
-      return res.status(200).json(response);
+      if (response.status === 200) {
+        return res.status(200).json(response);
+      }
+      return res.status(404).json({ message: "Student not found" });
     } catch (error) {
       throw error;
     }
   },
   async getStudentFeeDetails(req: Request, res: Response) {
     try {
-      const student = await studentServices.getStudentById(req.params.id);
+      const student: any = await studentServices.getStudentById(req.params.id);
+      if (student.status === 404) {
+        return res.status(404).json({ message: "student not found" });
+      }
       const tutionFee = await feeServices.getStudentFee(req.params.id);
       const sch = await feeServices.getStudentSch(req.params.id);
       const loan = await feeServices.getStudentLoan(req.params.id);
@@ -98,7 +104,10 @@ const studentController = {
         DISTRICT,
         SCHOOL
       );
-      return res.status(200).json(response);
+      if (response.status === 200) {
+        return res.status(200).json(response);
+      }
+      return res.status(404).json({ message: "Students not found" });
     } catch (error) {
       throw error;
     }
