@@ -50,19 +50,17 @@ v1Routes.post(
   feeController.uploadStudentFee
 );
 v1Routes.post(
-  "/upload/sch",
+  "/upload/student/sch",
   upload.single("file"),
   feeController.uploadStudentSch
 );
 v1Routes.post(
-  "/upload/loan",
+  "/upload/student/loan",
   upload.single("file"),
   feeController.uploadStudentLoanData
 );
 v1Routes.get("/bank/due/:ReceiptNo", bankController.getBankDueDetails);
-v1Routes.get("/bank/due",(req,res)=>{
-  res.send("hello")
-})
+
 // v1Routes.post(
 //   "/upload/hostel/student",
 //   upload.single("file"),

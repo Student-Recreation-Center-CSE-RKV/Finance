@@ -69,11 +69,11 @@ const studentServices = {
     console.log(filterData);
     try {
       const students = await studentRepository.getAllStudents(filterData);
-      console.log(students);
-      if (students.length == 0) {
-        return { message: "Student not found" };
+
+      if (!students) {
+        return { status: 404, message: "Student not found" };
       }
-      return students;
+      return { students };
     } catch (error) {
       throw error;
     }

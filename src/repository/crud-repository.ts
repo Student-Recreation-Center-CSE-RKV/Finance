@@ -69,7 +69,6 @@ const CrudRepository = {
         return result;
       }
 
-
     } catch (error) {
       return error;
     }

@@ -1,4 +1,6 @@
+
 import bankRepository from "../repository/bank-repository"
+
 const bankServices = {
   async getBankDueDetails(ReceiptNo: String) {
     try {
@@ -13,4 +15,5 @@ const bankServices = {
     }
   },
 };
+
 export default bankServices;

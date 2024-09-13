@@ -316,9 +316,9 @@ const excelUtils = {
         seenIds.add(student.ID);
       }
     }
-  
+
     return Array.from(duplicates);
-  }
+  },
 };
 
 export { excelUtils };

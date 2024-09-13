@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
+
 import bankServices  from "../services/bank-service";
+
 
 const bankController = {
   async getBankDueDetails(req: Request, res: Response) {
@@ -22,3 +24,4 @@ const bankController = {
 };
 
 export default bankController;
+
