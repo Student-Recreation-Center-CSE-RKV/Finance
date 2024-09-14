@@ -1,23 +1,39 @@
 import CrudRepository from "./crud-repository";
 import { TutionFee, StudentSch, Loan } from "../models";
 const feeRepository = {
-  async uploadStudentFee(ID:String,data: {}) {
+  async uploadStudentFee(ID: String, data: {}) {
     try {
-      return await CrudRepository.update(TutionFee,ID, data);
+      if (await CrudRepository.contains(TutionFee, ID)) {
+        return await CrudRepository.update(TutionFee, ID, data);
+      }
+      else {
+        return await CrudRepository.create(TutionFee, data)
+      }
+
     } catch (error) {
       throw error;
     }
   },
-  async uploadStudentSch(ID:String,data: {}) {
+  async uploadStudentSch(ID: String, data: {}) {
     try {
-      return await CrudRepository.update(StudentSch,ID, data);
+      if (await CrudRepository.contains(StudentSch, ID)) {
+        return await CrudRepository.update(StudentSch, ID, data);
+      }
+      else {
+        return await CrudRepository.create(StudentSch, data)
+      }
     } catch (error) {
       throw error;
     }
   },
-  async uploadStudentLoan(ID:String,data: {}) {
+  async uploadStudentLoan(ID: String, data: {}) {
     try {
-      return await CrudRepository.update(Loan,ID, data);
+      if (await CrudRepository.contains(Loan, ID)) {
+        return await CrudRepository.update(Loan, ID, data);
+      }
+      else {
+        return await CrudRepository.create(Loan, data)
+      }
     } catch (error) {
       throw error;
     }

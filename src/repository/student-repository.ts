@@ -3,7 +3,15 @@ import { Student } from "../models";
 const studentRepository = {
   async uploadStudentsData(ID:String,data: {}) {
     try {
+      if(await CrudRepository.contains(Student,ID))
+      {
       return await CrudRepository.update(Student,ID, data);
+      }
+      else
+      {
+        return await CrudRepository.create(Student,data)
+      }
+
     } catch (error) {
       throw error;
     }

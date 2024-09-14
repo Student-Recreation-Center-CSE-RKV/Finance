@@ -56,19 +56,11 @@ const CrudRepository = {
   async update(model: Model<any>, ID: String, data: {}) {
     console.log("in repo:", ID, data);
     try {
-      const existingDocument = await model.findOne({ ID });
-      if (existingDocument) {
-        const response = await model.findOneAndUpdate({ ID }, data, {
-          new: true,
-        });
-        console.log("in repo res:", response);
-        return response;
-      }
-      else {
-        const result = await model.create(data);
-        return result;
-      }
-
+      const response = await model.findOneAndUpdate({ ID }, data, {
+        new: true,
+      });
+      console.log("in repo res:", response);
+      return response;
     } catch (error) {
       return error;
     }
@@ -84,6 +76,19 @@ const CrudRepository = {
       throw error;
     }
   },
+
+  async contains(model: Model<any>, ID: String) {
+    try {
+      const existingDocument = await model.findOne({ ID });
+      if (existingDocument)
+        return true;
+      else
+        return false;
+
+    } catch (error) {
+      return false;
+    }
+  }
 };
 
 export default CrudRepository;
