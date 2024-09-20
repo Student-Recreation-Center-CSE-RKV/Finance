@@ -60,6 +60,7 @@ v1Routes.post(
   feeController.uploadStudentLoanData
 );
 v1Routes.get("/bank/due/:ReceiptNo", bankController.getBankDueDetails);
+
 // v1Routes.post(
 //   "/upload/hostel/student",
 //   upload.single("file"),

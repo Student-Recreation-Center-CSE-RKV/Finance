@@ -11,4 +11,6 @@ const bankRepository = {
     }
   },
 };
+
 export default bankRepository;
+

@@ -40,7 +40,10 @@ const studentController = {
         if (array.length == 0) {
           for (const item of response) {
             try {
-              const response = await studentServices.updloadStudentsData(item);
+              let ID=""
+              if(item.ID)
+                ID=item.ID
+              const response = await studentServices.uploadStudentsData(ID,item);
               items.push(response);
             } catch (error) {
               throw error;
@@ -50,6 +53,7 @@ const studentController = {
             .status(200)
             .send({ message: "successfully uploaded student Details" });
         } else
+
           return res.status(404).send({
             message: "Duplicates found. " + array,
           });

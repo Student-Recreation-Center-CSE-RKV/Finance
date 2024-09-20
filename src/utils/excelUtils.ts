@@ -224,21 +224,21 @@ const excelUtils = {
 
       const studentData: StudentFeeRecord[] = [];
       rows.map((row, index) => {
-        if (index > 0) {
+        if (index > 0 && index<rows.length-1) {
           const structuredData: any = {
             ID: row["ROLL No."],
-            BATCH: row["BATCH"],
+            BATCH: row["BATCH"]?row["BATCH"]:0,
             TotalSch: row["Total Sch"],
-            OtherSch: row["Other Sch"] ? row["Other Sch"] : "NA",
+            OtherSch: row["Other Sch"] ? row["Other Sch"] : 0,
             FeePaidbyTheStudent: row["Fee Paid by the Student"]
               ? row["Fee Paid by the Student"]
-              : "NA",
-            TotalFeePaid: row["Total Fee Paid"] ? row["Total Fee Paid"] : "NA",
-            ActualPay: row["Actuval pay"] ? row["Actuval pay"] : "NA",
+              : 0,
+            TotalFeePaid: row["Total Fee Paid"] ? row["Total Fee Paid"] : 0,
+            ActualPay: row["Actuval pay"] ? row["Actuval pay"] : 0,
             RemainingBalance: row["Remaining Balance"]
               ? row["Remaining Balance"]
-              : "NA",
-            RefundAmount: row["Refund Amount"] ? row["Refund Amount"] : "NA",
+              : 0,
+            RefundAmount: row["Refund Amount"] ? row["Refund Amount"] : 0,
             academicYears: [],
           };
           for (const key in row) {
@@ -305,7 +305,7 @@ const excelUtils = {
       throw new Error("Failed to parse Excel file.");
     }
   },
-  findDuplicateIds(students: StudentData[]): string[] {
+  findDuplicateIds(students: any[]): string[] {
     const seenIds = new Set<string>();
     const duplicates = new Set<string>();
 

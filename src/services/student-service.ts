@@ -10,9 +10,9 @@ interface FilterData {
 }
 
 const studentServices = {
-  async updloadStudentsData(data: {}) {
+  async uploadStudentsData(ID:String,data: {}) {
     try {
-      return await studentRepository.uploadStudentsData(data);
+      return await studentRepository.uploadStudentsData(ID,data);
     } catch (error) {
       throw error;
     }

@@ -1,24 +1,24 @@
 import feeRepository from "../repository/fee-repository";
 
 const feeServices = {
-  async uploadStrudentTutionFee(data: {}) {
+  async uploadStudentTutionFee(ID:String,data: {}) {
     try {
-      return await feeRepository.uploadStudentFee(data);
+      return await feeRepository.uploadStudentFee(ID,data);
     } catch (error) {
       throw error;
     }
   },
-  async uploadStudentSch(data: {}) {
+  async uploadStudentSch(ID:String,data: {}) {
     try {
-      return await feeRepository.uploadStudentSch(data);
+      return await feeRepository.uploadStudentSch(ID,data);
     } catch (error) {
       throw error;
     }
   },
-  async uploadStudentLoan(data: {}) {
+  async uploadStudentLoan(ID:String,data: {}) {
     try {
       // console.log("in services", data);
-      return await feeRepository.uploadStudentLoan(data);
+      return await feeRepository.uploadStudentLoan(ID,data);
     } catch (error) {
       throw error;
     }

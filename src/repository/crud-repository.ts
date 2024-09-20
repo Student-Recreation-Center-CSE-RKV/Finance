@@ -69,12 +69,26 @@ const CrudRepository = {
   async uploadExcel(model: Model<any>, data: {}) {
     // console.log("in repo: ", data);
     try {
+      console.log(data)
       const response = await model.create(data);
       return response;
     } catch (error) {
       throw error;
     }
   },
+
+  async contains(model: Model<any>, ID: String) {
+    try {
+      const existingDocument = await model.findOne({ ID });
+      if (existingDocument)
+        return true;
+      else
+        return false;
+
+    } catch (error) {
+      return false;
+    }
+  }
 };
 
 export default CrudRepository;

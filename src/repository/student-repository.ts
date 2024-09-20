@@ -1,9 +1,17 @@
 import CrudRepository from "./crud-repository";
 import { Student } from "../models";
 const studentRepository = {
-  async uploadStudentsData(data: {}) {
+  async uploadStudentsData(ID:String,data: {}) {
     try {
-      return await CrudRepository.uploadExcel(Student, data);
+      if(await CrudRepository.contains(Student,ID))
+      {
+      return await CrudRepository.update(Student,ID, data);
+      }
+      else
+      {
+        return await CrudRepository.create(Student,data)
+      }
+
     } catch (error) {
       throw error;
     }

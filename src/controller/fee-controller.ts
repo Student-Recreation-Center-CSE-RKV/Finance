@@ -10,7 +10,10 @@ const feeController = {
         const response = await excelUtils.parseStudentFee(filePath);
         for (const item of response) {
           try {
-            const response = await feeServices.uploadStrudentTutionFee(item);
+            let ID=""
+            if(item.ID)
+              ID=item.ID
+            const response = await feeServices.uploadStudentTutionFee(ID,item);
             items.push(response);
           } catch (error) {
             throw error;
@@ -31,7 +34,10 @@ const feeController = {
         const response = await excelUtils.parseStudentSch(filePath);
         for (const item of response) {
           try {
-            const response = await feeServices.uploadStudentSch(item);
+              let ID=""
+              if(item.ID)
+                ID=item.ID
+            const response = await feeServices.uploadStudentSch(ID,item);
             items.push(response);
           } catch (error) {
             throw error;
@@ -52,17 +58,35 @@ const feeController = {
         const filePath = req.file.path;
         const response = await excelUtils.parseStudentLoan(filePath);
         // console.log(response);
-        for (const item of response) {
-          try {
-            // console.log("in controller: ", item);
-            const response = await feeServices.uploadStudentLoan(item);
-            items.push(response);
-          } catch (error) {
-            throw error;
+        const array = excelUtils.findDuplicateIds(response);
+
+        if(array.length==0)
+        {
+          for (const item of response) {
+            try {
+              let ID=""
+              if(item.ID)
+                ID=item.ID
+              // console.log("in controller: ", item);
+              const response = await feeServices.uploadStudentLoan(ID,item);
+              items.push(response);
+            } catch (error) {
+              throw error;
+            }
           }
+          // res.status(200).send(response);
+          res.status(200).send({ message: "Succesfully uploaded data" });
         }
-        // res.status(200).send(response);
-        res.status(200).send({ message: "Succesfully uploaded data" });
+        else
+        {
+          res
+          .status(500)
+          .send({
+            message:
+              "Contains Duplicates Remove those in excel. They are " + array,
+          });
+        }
+        
       }
     } catch (error) {
       console.log(error);
