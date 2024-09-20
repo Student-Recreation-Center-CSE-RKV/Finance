@@ -29,7 +29,7 @@ const CrudRepository = {
   },
   async findBy(model: Model<any>, data: {}) {
     try {
-      console.log("data", data);
+      // console.log("data", data);
       const response = await model.findOne(data);
       return response;
     } catch (error) {
