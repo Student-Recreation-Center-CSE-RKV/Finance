@@ -1,6 +1,7 @@
 import { studentRepository } from "../repository/index";
 interface FilterData {
   ID?: String;
+  BATCH?: String;
   year?: String | { $regex: String; $options: String };
   NAME?: String | { $regex: String; $options: String };
   RefId?: String | { $regex: String; $options: String };
@@ -37,6 +38,7 @@ const studentServices = {
   },
   async getAllStudents(
     ID: String,
+    BATCH: String,
     year: String,
     NAME: String,
     RefId: String,
@@ -47,6 +49,9 @@ const studentServices = {
     const filterData: FilterData = {};
     if (ID) {
       filterData.ID = ID;
+    }
+    if (BATCH) {
+      filterData.BATCH = BATCH;
     }
     if (year) {
       filterData.year = { $regex: year, $options: "i" };
@@ -66,14 +71,14 @@ const studentServices = {
     if (SCHOOL) {
       filterData.SCHOOL = { $regex: SCHOOL, $options: "i" };
     }
-    console.log(filterData);
+    // console.log(filterData);
     try {
       const students = await studentRepository.getAllStudents(filterData);
 
       if (!students) {
         return { status: 404, message: "Student not found" };
       }
-      return { students };
+      return { status: 200, students };
     } catch (error) {
       throw error;
     }

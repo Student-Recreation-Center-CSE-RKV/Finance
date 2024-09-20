@@ -95,8 +95,11 @@ const studentController = {
       const branch = (req.query.branch as string | undefined) ?? "";
       const DISTRICT = (req.query.DISTRICT as string | undefined) ?? "";
       const SCHOOL = (req.query.SCHOOL as string | undefined) ?? "";
+      const BATCH = (req.query.BATCH as string | undefined) ?? "";
+
       const response = await studentServices.getAllStudents(
         ID,
+        BATCH,
         NAME,
         year,
         RefId,
@@ -105,7 +108,18 @@ const studentController = {
         SCHOOL
       );
       if (response.status === 200) {
-        return res.status(200).json(response);
+        const items = await Promise.all(
+          response.students?.map(async (e: any) => {
+            const fee = await feeServices.getStudentFee(e.ID);
+            const sch = await feeServices.getStudentSch(e.ID);
+            const loan = await feeServices.getStudentLoan(e.ID);
+
+            return { student: e, fee, sch, loan };
+          }) || []
+        );
+
+        // console.log(items);
+        return res.status(200).json(items);
       }
       return res.status(404).json({ message: "Students not found" });
     } catch (error) {
