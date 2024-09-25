@@ -13,6 +13,19 @@ const feeRepository = {
     } catch (error) {
       throw error;
     }
+  },async updateStudentFee(ID: String, data: {}) {
+    try {
+        return await CrudRepository.update(TutionFee, ID, data);
+    } catch (error) {
+      throw error;
+    }
+  },
+  async updateStudentHostelFee(ID: String, data: {}) {
+    try {
+        return await CrudRepository.update(HostelFee, ID, data);
+    } catch (error) {
+      throw error;
+    }
   },
   async uploadStudentHostelFee(ID: String, data: {}) {
     try {
@@ -36,6 +49,14 @@ const feeRepository = {
       else {
         return await CrudRepository.create(StudentSch, data)
       }
+    } catch (error) {
+      throw error;
+    }
+  },async updateStudentSch(ID: String, data: {}) {
+    try {
+      
+        return await CrudRepository.update(StudentSch, ID, data);
+      
     } catch (error) {
       throw error;
     }

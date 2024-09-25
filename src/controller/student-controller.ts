@@ -140,6 +140,50 @@ const studentController = {
       res.status(500).json({ error: error });
     }
   },
+  async addTutionFeeInstallment(req:Request,res:Response)
+  {
+    try {
+     
+      const id = req.body.ID;
+      const newInstallment=req.body.installment;
+      
+     const tutionFee=await feeServices.getStudentFee(id);
+     const sch = await feeServices.getStudentSch(id);
+     tutionFee.installments.push(newInstallment)
+     tutionFee.Total=tutionFee.Total+parseInt(req.body.installment.Amount)
+     sch.FeePaidbyTheStudent=sch.FeePaidbyTheStudent+parseInt(req.body.installment.Amount)
+     sch.TotalFeePaid+=parseInt(req.body.installment.Amount)
+     sch.RemainingBalance=sch.ActualPay-sch.TotalFeePaid
+
+     const updatedTutionFee=await feeServices.updateStudentTutionFee(id,tutionFee)
+     const updatedsch=await feeServices.updateStudentSch(id,sch)
+      return res.status(200).json({updatedTutionFee,updatedsch});
+    } catch (error) {
+      res.status(500).json({ error: error });
+    }
+  },
+  async addHostelFeeInstallment(req:Request,res:Response)
+  {
+    try {
+     
+      const id = req.body.ID;
+      const newInstallment=req.body.installment;
+      
+     const hostelFee=await feeServices.getStudentHostelFee(id);
+     const sch = await feeServices.getStudentSch(id);
+     hostelFee.installments.push(newInstallment)
+     hostelFee.Total=hostelFee.Total+parseInt(req.body.installment.Amount)
+     sch.FeePaidbyTheStudent=sch.FeePaidbyTheStudent+parseInt(req.body.installment.Amount)
+     sch.TotalFeePaid+=parseInt(req.body.installment.Amount)
+     sch.RemainingBalance=sch.ActualPay-sch.TotalFeePaid
+
+     const updatedHostelFee=await feeServices.updateStudentHostelFee(id,hostelFee)
+     const updatedsch=await feeServices.updateStudentSch(id,sch)
+      return res.status(200).json({updatedHostelFee,updatedsch});
+    } catch (error) {
+      res.status(500).json({ error: error });
+    }
+  }
 };
 
 export default studentController;

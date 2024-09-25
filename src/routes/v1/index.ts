@@ -74,6 +74,8 @@ v1Routes.get("/bank/due/:ReceiptNo", bankController.getBankDueDetails);
 // );
 
 v1Routes.get("/student/:id", studentController.getStudentById);
+v1Routes.put("/student/update/:id",studentController.updateStudent)
+
 
 v1Routes.get("/student/fee/:id", studentController.getStudentFeeDetails);
 
@@ -84,5 +86,7 @@ v1Routes.get("/graph/batch",graphController.batchWiseTotalData);
 v1Routes.get("/graph/category/:batchYear",graphController.categoryWiseTotalData)
 
 v1Routes.put("/update/student/:id", studentController.updateStudent);
+v1Routes.put("/update/student/tutionFee/addDue",studentController.addTutionFeeInstallment)
+v1Routes.put("/update/student/hostelFee/addDue",studentController.addHostelFeeInstallment)
 
 export default v1Routes;
