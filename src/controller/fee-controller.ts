@@ -8,12 +8,38 @@ const feeController = {
       if (req.file) {
         const filePath = req.file.path;
         const response = await excelUtils.parseStudentFee(filePath);
+        console.log(response)
         for (const item of response) {
           try {
             let ID=""
             if(item.ID)
               ID=item.ID
             const response = await feeServices.uploadStudentTutionFee(ID,item);
+            items.push(response);
+          } catch (error) {
+            throw error;
+          }
+        }
+        res.status(200).send(items);
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(500).send(error);
+    }
+  },
+  async uploadStudentHostelFee(req: Request, res: Response) {
+    try {
+      let items: any[] = [];
+      if (req.file) {
+        const filePath = req.file.path;
+        const response = await excelUtils.parseStudentHostelFee(filePath);
+        
+        for (const item of response) {
+          try {
+            let ID=""
+            if(item.ID)
+              ID=item.ID
+            const response = await feeServices.uploadStudentHostelFee(ID,item);
             items.push(response);
           } catch (error) {
             throw error;
@@ -51,6 +77,7 @@ const feeController = {
       res.status(500).send(error);
     }
   },
+  
   async uploadStudentLoanData(req: Request, res: Response) {
     try {
       let items: any[] = [];

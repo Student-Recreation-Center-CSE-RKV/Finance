@@ -80,11 +80,7 @@ const CrudRepository = {
   async contains(model: Model<any>, ID: String) {
     try {
       const existingDocument = await model.findOne({ ID });
-      if (existingDocument)
-        return true;
-      else
-        return false;
-
+      return existingDocument
     } catch (error) {
       return false;
     }

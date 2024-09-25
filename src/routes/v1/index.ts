@@ -5,6 +5,7 @@ import excelController from "../../controller/excel-controller";
 import studentController from "../../controller/student-controller";
 import feeController from "../../controller/fee-controller";
 import bankController from "../../controller/bank-controller";
+import graphController from "../../controller/graphController";
 // const {
 //   validateUserAuth,
 //   validateisAdminId,
@@ -50,6 +51,11 @@ v1Routes.post(
   feeController.uploadStudentFee
 );
 v1Routes.post(
+  "/upload/student/hostelfee",
+  upload.single("file"),
+  feeController.uploadStudentHostelFee
+);
+v1Routes.post(
   "/upload/student/sch",
   upload.single("file"),
   feeController.uploadStudentSch
@@ -72,6 +78,10 @@ v1Routes.get("/student/:id", studentController.getStudentById);
 v1Routes.get("/student/fee/:id", studentController.getStudentFeeDetails);
 
 v1Routes.get("/students", studentController.getAllStudents);
+
+v1Routes.get("/graph/batch",graphController.batchWiseTotalData);
+
+v1Routes.get("/graph/category/:batchYear",graphController.categoryWiseTotalData)
 
 v1Routes.put("/update/student/:id", studentController.updateStudent);
 

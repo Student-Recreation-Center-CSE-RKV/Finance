@@ -42,6 +42,16 @@ export interface Fee extends Document {
   BATCH?: string;
   Total?: number;
   installments?: Reciept[];
+  admissionFee: Reciept[];
+  reAdmissionFee:Reciept[];
+  cautionDeposit:Reciept[]
+}
+
+export interface HostelFee extends Document {
+  ID?: string;
+  BATCH?: string;
+  Total?: number;
+  installments?: Reciept[];
 }
 
 interface AcademicYear {
