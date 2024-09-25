@@ -1,7 +1,7 @@
-import { TutionFee } from "../models";
+import { HostelFee, TutionFee } from "../models";
 import CrudRepository from "./crud-repository";
 const bankRepository = {
-  async getBankDueDetails(ReceiptNo: String) {
+  async getBankTutionDueDetails(ReceiptNo: String) {
     try {
       return await CrudRepository.findBy(TutionFee, {
         "installments.ReceiptNo": ReceiptNo,
@@ -10,6 +10,15 @@ const bankRepository = {
       throw error;
     }
   },
+  async getBankHostelDueDetails(ReceiptNo: String) {
+    try {
+      return await CrudRepository.findBy(HostelFee, {
+        "installments.ReceiptNo": ReceiptNo,
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
 };
 
 export default bankRepository;

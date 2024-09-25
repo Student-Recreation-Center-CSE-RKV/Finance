@@ -83,9 +83,10 @@ const studentController = {
         return res.status(404).json({ message: "student not found" });
       }
       const tutionFee = await feeServices.getStudentFee(req.params.id);
+      const hostelFee=await feeServices.getStudentHostelFee(req.params.id);
       const sch = await feeServices.getStudentSch(req.params.id);
       const loan = await feeServices.getStudentLoan(req.params.id);
-      return res.status(200).json({ student, tutionFee, sch, loan });
+      return res.status(200).json({ student, tutionFee, hostelFee,sch, loan  });
     } catch (error) {
       throw error;
     }

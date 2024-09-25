@@ -8,6 +8,13 @@ const feeServices = {
       throw error;
     }
   },
+  async uploadStudentHostelFee(ID:String,data: {}) {
+    try {
+      return await feeRepository.uploadStudentHostelFee(ID,data);
+    } catch (error) {
+      throw error;
+    }
+  },
   async uploadStudentSch(ID:String,data: {}) {
     try {
       return await feeRepository.uploadStudentSch(ID,data);
@@ -27,6 +34,13 @@ const feeServices = {
   async getStudentFee(ID: String) {
     try {
       return await feeRepository.getStudentFee(ID);
+    } catch (error) {
+      throw error;
+    }
+  },
+  async getStudentHostelFee(ID: String) {
+    try {
+      return await feeRepository.getStudentHostelFee(ID);
     } catch (error) {
       throw error;
     }

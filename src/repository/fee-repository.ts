@@ -1,5 +1,5 @@
 import CrudRepository from "./crud-repository";
-import { TutionFee, StudentSch, Loan } from "../models";
+import { TutionFee, StudentSch, Loan,HostelFee } from "../models";
 const feeRepository = {
   async uploadStudentFee(ID: String, data: {}) {
     try {
@@ -14,9 +14,23 @@ const feeRepository = {
       throw error;
     }
   },
+  async uploadStudentHostelFee(ID: String, data: {}) {
+    try {
+      if (await CrudRepository.contains(HostelFee, ID)) {
+        return await CrudRepository.update(HostelFee, ID, data);
+      }
+      else {
+        return await CrudRepository.create(HostelFee, data)
+      }
+
+    } catch (error) {
+      throw error;
+    }
+  },
   async uploadStudentSch(ID: String, data: {}) {
     try {
-      if (await CrudRepository.contains(StudentSch, ID)) {
+      const res = await CrudRepository.contains(StudentSch, ID);
+      if(res){
         return await CrudRepository.update(StudentSch, ID, data);
       }
       else {
@@ -41,6 +55,13 @@ const feeRepository = {
   async getStudentFee(ID: String) {
     try {
       return await CrudRepository.findBy(TutionFee, { ID });
+    } catch (error) {
+      throw error;
+    }
+  },
+  async getStudentHostelFee(ID: String) {
+    try {
+      return await CrudRepository.findBy(HostelFee, { ID });
     } catch (error) {
       throw error;
     }

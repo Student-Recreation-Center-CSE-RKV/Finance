@@ -40,6 +40,16 @@ interface Installment {
   Amount: number;
 }
 
+interface StudentTutionFeeRecord {
+  BATCH: string;
+  ID: string;
+  installments: Installment[];
+  Total: number;
+  admissionFee: Installment[];
+  reAdmissionFee:Installment[];
+  cautionDeposit:Installment[]
+}
+
 interface StudentFeeRecord {
   BATCH: string;
   ID: string;
@@ -156,13 +166,14 @@ const excelUtils = {
       // Convert the sheet to JSON rows
       const rows: any[] = XLSX.utils.sheet_to_json(sheet);
       const studentData: StudentData[] = [];
+      
       rows.map((item) => {
         studentData.push({
           ID: item["ROLL No."],
           StudentName: item["NAME AS PER SSC RECORDS"],
           FatherName: item["Father Name"] ? item["Father Name"] : "NA",
-          Category: item["CASTE"] ? item["CASTE"] : "NA",
-          Gender: item["GENDER"] ? item["GENDER"] : "NA",
+          Category: this.normalizeCaste(item["CASTE"]),
+          Gender: item["GENDER"] ? this.normalizeGender(item["GENDER"]) : "NA",
           BATCH: item["BATCH"] ? item["BATCH"] : "NA",
         });
       });
@@ -176,6 +187,68 @@ const excelUtils = {
     try {
       const workbook = XLSX.readFile(filePath);
       const sheet = workbook.Sheets["Fees"];
+
+      const rows: any[] = XLSX.utils.sheet_to_json(sheet);
+
+      const studentData: StudentTutionFeeRecord[] = [];
+      rows.map((row, index) => {
+        if (index > 1) {
+          const studentRecord: StudentTutionFeeRecord = {
+            ID: row["I.D NO"],
+            BATCH: row["BATCH"],
+            installments: [],
+            Total: row["Total"],
+            admissionFee:[],
+            cautionDeposit:[],
+            reAdmissionFee:[]
+          };
+
+          for (const key in row) {
+            if (key.match("Installment")) {
+              const installmentIndex = key.match(/\d+/);
+
+              if (installmentIndex) {
+                const index = parseInt(installmentIndex[0], 10);
+                const receiptNo = row[key];
+                const date = row[`__EMPTY_${2 * (index - 1) + 7}`];
+                const amount = row[`__EMPTY_${2 * (index - 1) + 8}`];
+                studentRecord.installments.push({
+                  ReceiptNo: receiptNo,
+                  Amount: amount,
+                  Date: date,
+                });
+                
+              }
+              studentRecord.admissionFee.push({
+                ReceiptNo:row["Admission Fee"],
+                Amount:row[`__EMPTY_1`],
+                Date:row[`__EMPTY_2`]
+              })
+              studentRecord.reAdmissionFee.push({
+                ReceiptNo:row["Re Admission Fee"],
+                Amount:row[`__EMPTY_3`],
+                Date:row[`__EMPTY_4`]
+              })
+              studentRecord.cautionDeposit.push({
+                ReceiptNo:row["Caution Deposit"],
+                Amount:row[`__EMPTY_5`],
+                Date:row[`__EMPTY_6`]
+              })
+            }
+          }
+          studentData.push(studentRecord);
+          // console.log(studentRecord)
+        }
+      });
+      return studentData;
+    } catch (error) {
+      throw new Error("Failed to parse Excel file.");
+    }
+  },
+  async parseStudentHostelFee(filePath: string) {
+    try {
+      const workbook = XLSX.readFile(filePath);
+      const sheet = workbook.Sheets["Hostel"];
 
       const rows: any[] = XLSX.utils.sheet_to_json(sheet);
 
@@ -196,8 +269,8 @@ const excelUtils = {
               if (installmentIndex) {
                 const index = parseInt(installmentIndex[0], 10);
                 const receiptNo = row[key];
-                const date = row[`__EMPTY_${2 * (index - 1) + 7}`];
-                const amount = row[`__EMPTY_${2 * (index - 1) + 8}`];
+                const date = row[`__EMPTY_${2 * (index - 1) + 1}`];
+                const amount = row[`__EMPTY_${2 * (index - 1) + 2}`];
                 studentRecord.installments.push({
                   ReceiptNo: receiptNo,
                   Amount: amount,
@@ -319,6 +392,28 @@ const excelUtils = {
 
     return Array.from(duplicates);
   },
+  normalizeCaste(caste: string | null | undefined): string {
+    if (caste && caste.toUpperCase().startsWith("BC")) {
+      // Capture BC followed by any single letter (like BC-A, BC_B, BC A)
+      return caste
+        .toUpperCase()
+        .replace(/[_\s]/g, "-")
+        .replace(/BC([A-Z])/, "BC-$1");
+    }
+    return caste ? caste.toUpperCase() : "NA"; // Return in uppercase or "NA" if not present
+  },
+  normalizeGender(input: string): string {
+    const normalizedInput = input.trim().toLowerCase();
+  
+    if (["g", "f", "girl", "female"].includes(normalizedInput)) {
+      return "Girl";
+    } else if (["b", "m", "boy", "male"].includes(normalizedInput)) {
+      return "Boy";
+    }
+  
+    // Return 'NA' for invalid input or unknown gender
+    return "NA";
+  }
 };
 
 export { excelUtils };
