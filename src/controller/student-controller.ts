@@ -10,6 +10,10 @@ interface ReceiptDetail {
   Amount?: number;
 }
 
+interface CustomRequestForFile extends Request {
+  fileBase64?: string; // Optional property to hold the Base64 string
+}
+
 export interface StudentFeeRecord {
   StudentID: string;
   HallTicket: string;
@@ -140,50 +144,135 @@ const studentController = {
       res.status(500).json({ error: error });
     }
   },
-  async addTutionFeeInstallment(req:Request,res:Response)
+  async addTutionFeeInstallment(req:CustomRequestForFile,res:Response)
   {
     try {
-     
       const id = req.body.ID;
-      const newInstallment=req.body.installment;
+      const receiptNo = req.body.ReceiptNo;
+      const date = req.body.Date;
+      const amount = req.body.Amount;
+      let imageBase64 = req.fileBase64; 
+  
+      console.log(req.body)
+      // Validate input
+      if (!id || !receiptNo || !date || !amount) {
+        return res.status(400).json({ error: "ID, ReceiptNo, Date, and Amount are required."});
+      }
       
+      // Create newInstallment object
+      const newInstallment = {
+        ReceiptNo: receiptNo,
+        Date: date,
+        Amount: parseInt(amount) // Ensure amount is an integer
+      };
+
+      
+
      const tutionFee=await feeServices.getStudentFee(id);
      const sch = await feeServices.getStudentSch(id);
      tutionFee.installments.push(newInstallment)
-     tutionFee.Total=tutionFee.Total+parseInt(req.body.installment.Amount)
-     sch.FeePaidbyTheStudent=sch.FeePaidbyTheStudent+parseInt(req.body.installment.Amount)
-     sch.TotalFeePaid+=parseInt(req.body.installment.Amount)
+     tutionFee.Total=tutionFee.Total+newInstallment.Amount
+
+     
+     sch.FeePaidbyTheStudent=sch.FeePaidbyTheStudent+newInstallment.Amount
+     sch.TotalFeePaid+=newInstallment.Amount
      sch.RemainingBalance=sch.ActualPay-sch.TotalFeePaid
+
+     
 
      const updatedTutionFee=await feeServices.updateStudentTutionFee(id,tutionFee)
      const updatedsch=await feeServices.updateStudentSch(id,sch)
-      return res.status(200).json({updatedTutionFee,updatedsch});
+      if(!imageBase64) imageBase64=""
+
+      
+
+     const newDueAddedResponse = await feeServices.addNewDueNumber(
+      id,
+      newInstallment.Amount,
+      imageBase64, // Non-null assertion (ensure it's not null or undefined)
+      "Tuition Fee",
+      newInstallment.ReceiptNo
+    );
+
+    
+
+    // Send a successful response with the updated records
+    return res.status(200).json({ updatedTutionFee, updatedsch, newDueAddedResponse });
+    
+
     } catch (error) {
+      console.log(" Not Success")
       res.status(500).json({ error: error });
     }
   },
-  async addHostelFeeInstallment(req:Request,res:Response)
-  {
+  async addHostelFeeInstallment(req: CustomRequestForFile, res: Response) {
     try {
-     
+      // Extract individual fields from form-data
       const id = req.body.ID;
-      const newInstallment=req.body.installment;
+      const receiptNo = req.body.ReceiptNo;
+      const date = req.body.Date;
+      const amount = req.body.Amount;
+      let imageBase64 = req.fileBase64; 
+  
+      console.log(req.body)
+      // Validate input
+      if (!id || !receiptNo || !date || !amount) {
+        return res.status(400).json({ error: "ID, ReceiptNo, Date, and Amount are required."});
+      }
       
-     const hostelFee=await feeServices.getStudentHostelFee(id);
-     const sch = await feeServices.getStudentSch(id);
-     hostelFee.installments.push(newInstallment)
-     hostelFee.Total=hostelFee.Total+parseInt(req.body.installment.Amount)
-     sch.FeePaidbyTheStudent=sch.FeePaidbyTheStudent+parseInt(req.body.installment.Amount)
-     sch.TotalFeePaid+=parseInt(req.body.installment.Amount)
-     sch.RemainingBalance=sch.ActualPay-sch.TotalFeePaid
-
-     const updatedHostelFee=await feeServices.updateStudentHostelFee(id,hostelFee)
-     const updatedsch=await feeServices.updateStudentSch(id,sch)
-      return res.status(200).json({updatedHostelFee,updatedsch});
+      // Create newInstallment object
+      const newInstallment = {
+        ReceiptNo: receiptNo,
+        Date: date,
+        Amount: parseInt(amount) // Ensure amount is an integer
+      };
+  
+      // Fetch hostel fee and student scholarship
+      const hostelFee = await feeServices.getStudentHostelFee(id);
+      const sch = await feeServices.getStudentSch(id);
+  
+      // Update hostel fee and scholarship details
+      hostelFee.installments.push(newInstallment);
+      hostelFee.Total += newInstallment.Amount;
+      sch.FeePaidbyTheStudent += newInstallment.Amount;
+      sch.TotalFeePaid += newInstallment.Amount;
+      sch.RemainingBalance = sch.ActualPay - sch.TotalFeePaid;
+  
+      // Update records in the database
+      const updatedHostelFee = await feeServices.updateStudentHostelFee(id, hostelFee);
+      const updatedsch = await feeServices.updateStudentSch(id, sch);
+      
+      // Handle image base64
+      if (!imageBase64) imageBase64 = ""; // Default to empty string if no image
+  
+      // Add new due number
+      const newDueAddedResponse = await feeServices.addNewDueNumber(
+        id,
+        newInstallment.Amount,
+        imageBase64,
+        "Hostel Fee",
+        newInstallment.ReceiptNo
+      );
+  
+      // Return response
+      return res.status(200).json({ updatedHostelFee, updatedsch, newDueAddedResponse });
     } catch (error) {
-      res.status(500).json({ error: error });
+      console.error("Error in addHostelFeeInstallment:", error); // Log the error for debugging
+      res.status(500).json({ error});
+    }
+  },
+  async getAllAddedDues(req:Request,res:Response)
+  {
+    try{
+      const response= await feeServices.getAllAddedDueNumbers()
+      res.status(200).json(response)
+
+    }catch(error)
+    {
+      res.status(500).json({error})
     }
   }
+  
 };
 
 export default studentController;

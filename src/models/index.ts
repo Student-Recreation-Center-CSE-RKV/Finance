@@ -5,4 +5,5 @@ import TutionFee from "./fee-model";
 import StudentSch from "./sch-model";
 import Loan from "./Loan-model";
 import HostelFee from "./hostel-fee-model"
-export { Msi, Student, BankMs, TutionFee, StudentSch, Loan,HostelFee };
+import AddedDues  from "./AddedDues";
+export { Msi, Student, BankMs, TutionFee, StudentSch, Loan,HostelFee,AddedDues };
