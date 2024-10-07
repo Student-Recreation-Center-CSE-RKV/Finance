@@ -202,7 +202,21 @@ const excelUtils = {
             cautionDeposit:[],
             reAdmissionFee:[]
           };
-
+          studentRecord.admissionFee.push({
+            ReceiptNo:row["Admission Fee"],
+            Amount:row[`__EMPTY_1`],
+            Date:row[`__EMPTY_2`]
+          })
+          studentRecord.reAdmissionFee.push({
+            ReceiptNo:row["Re Admission Fee"],
+            Amount:row[`__EMPTY_3`],
+            Date:row[`__EMPTY_4`]
+          })
+          studentRecord.cautionDeposit.push({
+            ReceiptNo:row["Caution Deposit"],
+            Amount:row[`__EMPTY_5`],
+            Date:row[`__EMPTY_6`]
+          })
           for (const key in row) {
             if (key.match("Installment")) {
               const installmentIndex = key.match(/\d+/);
@@ -219,21 +233,7 @@ const excelUtils = {
                 });
                 
               }
-              studentRecord.admissionFee.push({
-                ReceiptNo:row["Admission Fee"],
-                Amount:row[`__EMPTY_1`],
-                Date:row[`__EMPTY_2`]
-              })
-              studentRecord.reAdmissionFee.push({
-                ReceiptNo:row["Re Admission Fee"],
-                Amount:row[`__EMPTY_3`],
-                Date:row[`__EMPTY_4`]
-              })
-              studentRecord.cautionDeposit.push({
-                ReceiptNo:row["Caution Deposit"],
-                Amount:row[`__EMPTY_5`],
-                Date:row[`__EMPTY_6`]
-              })
+              
             }
           }
           studentData.push(studentRecord);

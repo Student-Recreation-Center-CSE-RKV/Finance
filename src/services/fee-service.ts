@@ -7,6 +7,12 @@ const feeServices = {
     } catch (error) {
       throw error;
     }
+  },async updateStudentTutionFee(ID:String,data: {}) {
+    try {
+      return await feeRepository.updateStudentFee(ID,data);
+    } catch (error) {
+      throw error;
+    }
   },
   async uploadStudentHostelFee(ID:String,data: {}) {
     try {
@@ -15,9 +21,22 @@ const feeServices = {
       throw error;
     }
   },
+  async updateStudentHostelFee(ID:String,data: {}) {
+    try {
+      return await feeRepository.updateStudentHostelFee(ID,data);
+    } catch (error) {
+      throw error;
+    }
+  },
   async uploadStudentSch(ID:String,data: {}) {
     try {
       return await feeRepository.uploadStudentSch(ID,data);
+    } catch (error) {
+      throw error;
+    }
+  },async updateStudentSch(ID:String,data: {}) {
+    try {
+      return await feeRepository.updateStudentSch(ID,data);
     } catch (error) {
       throw error;
     }
@@ -29,6 +48,24 @@ const feeServices = {
     } catch (error) {
       throw error;
     }
+  },
+  async addNewDueNumber(ID: String,amount:number,image:String,feeType:String,due:String) {
+    try {
+      // console.log("in services", data);
+      return await feeRepository.addNewDueNumber(ID,amount,image,feeType,due);
+    } catch (error) {
+      throw error;
+    }
+  },
+  async getAllAddedDueNumbers()
+  {
+    try {
+      // console.log("in services", data);
+      return await feeRepository.getAllAddedDues()
+    } catch (error) {
+      throw error;
+    }
+
   },
 
   async getStudentFee(ID: String) {

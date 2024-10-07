@@ -1,5 +1,5 @@
 import CrudRepository from "./crud-repository";
-import { TutionFee, StudentSch, Loan,HostelFee } from "../models";
+import { TutionFee, StudentSch, Loan,HostelFee,AddedDues } from "../models";
 const feeRepository = {
   async uploadStudentFee(ID: String, data: {}) {
     try {
@@ -10,6 +10,19 @@ const feeRepository = {
         return await CrudRepository.create(TutionFee, data)
       }
 
+    } catch (error) {
+      throw error;
+    }
+  },async updateStudentFee(ID: String, data: {}) {
+    try {
+        return await CrudRepository.update(TutionFee, ID, data);
+    } catch (error) {
+      throw error;
+    }
+  },
+  async updateStudentHostelFee(ID: String, data: {}) {
+    try {
+        return await CrudRepository.update(HostelFee, ID, data);
     } catch (error) {
       throw error;
     }
@@ -36,6 +49,23 @@ const feeRepository = {
       else {
         return await CrudRepository.create(StudentSch, data)
       }
+    } catch (error) {
+      throw error;
+    }
+  },async updateStudentSch(ID: String, data: {}) {
+    try {
+      
+        return await CrudRepository.update(StudentSch, ID, data);
+      
+    } catch (error) {
+      throw error;
+    }
+  },
+  async addNewDueNumber(ID: String,amount:number,image:String,feeType:String,due:String) {
+    try {
+      
+       return await CrudRepository.create(AddedDues,{dueNumber:due,amount,feeType,image,addedToID:ID})
+      
     } catch (error) {
       throw error;
     }
@@ -80,6 +110,16 @@ const feeRepository = {
       throw error;
     }
   },
+  async getAllAddedDues() {
+    try {
+      // Fetch all dues, sorting by 'addedOn' in descending order (recent first)
+      const dues = await AddedDues.find({}).sort({ addedOn: -1 });
+      return dues;
+    } catch (error) {
+      throw error;
+    }
+  }
+  
 };
 
 export default feeRepository;
