@@ -12,3 +12,20 @@ A project for the finance office of our college. The API allows users to upload 
 
 ## Technologies Used
 - **Backend**: Express.js with TypeScript
+
+## Contributors
+- B. Nagarjuna
+- J. Revanth Kumar
+
+## API Endpoints
+
+| Endpoint                                | Method | Description                                           |
+|-----------------------------------------|--------|-------------------------------------------------------|
+| `/api/v1/upload/student/details`       | POST   | Upload student details Excel file.                   |
+
+### Success Response
+```json
+{
+    "message": "successfully uploaded student Details"
+}
+
