@@ -134,6 +134,12 @@ The installments should be merged like in image
 |-----------------------------------------|--------|-------------------------------------------------------|
 | `/api/v1/upload/student/sch`            | POST   | Upload scholarship data Excel file.                   |
 
+## Scholarship header format
+| S.No. | ROLL No. | BATCH | 2008-09 | 2008-09 | 2009-10 | 2009-10 | 2010-11 | 2010-11 | 2011-12 | 2011-12 | 2012-13 | 2012-13 | 2013-14 | 2013-14 | 2014-15 | 2014-15 | 2015-16 | 2015-16 | 2016-17 | 2016-17 | Total Sch | Other Sch | Fee Paid by the Student | Total Fee Paid | Actual Pay | Remaining Balance | Refund Amount | TC |
+| ----- | -------- | ----- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | -------- | -------- | ---------------------- | -------------- | ---------- | ---------------- | -------------- | -- |
+|       |          |       | Actual Pay | Sch Received | Actual Pay | Sch Received | Actual Pay | Sch Received | Actual Pay | Sch Received | Actual Pay | Sch Received | Actual Pay | Sch Received | Actual Pay | Sch Received | Actual Pay | Sch Received | Actual Pay | Sch Received |          |          |                        |                |            |                  |                |    |
+
+
 ### Success Response
 ```json
 {
@@ -144,6 +150,14 @@ The installments should be merged like in image
 |-----------------------------------------|--------|-------------------------------------------------------|
 | `/api/v1/upload/student/loan`           | POST   | Upload student loan data Excel file.                  |
 
+## Loan Header Format
+
+| S.No. | ROLL No. | 2008-09                  | 2009-10                  | 2010-11                  | 2011-12                  | 2012-13                  | 2013-14                  | Grand Total              | Refund P1 | Refund P1 |
+| ----- | -------- | ------------------------ | ------------------------ | ------------------------ | ------------------------ | ------------------------ | ------------------------ | ------------------------ | --------- | --------- |
+|       |          | Loan | Direct Bank | Others | Total | Loan | Others | Total | Loan | Others | Total | Loan | Others | Total | Loan | Others | Total | Loan | Others | Total |
+|       |          |      |              |        |       |      |        |       |      |        |       |      |        |       |      |        |       |      |        |       |
+
+
 ### Success Response
 ```json
 {
@@ -153,6 +167,12 @@ The installments should be merged like in image
 | Endpoint                                | Method | Description                                           |
 |-----------------------------------------|--------|-------------------------------------------------------|
 | `/api/v1/upload/msi`                    | POST   | Upload MSI data Excel file.                           |
+
+## MSI Excel format
+
+| Category Name  | Payment Mode  | Bank Reference No | Transaction Date | Amount | Status | Date | Name of the Student | Class and Year | ID No | On Account Of | Amount Paid (Rs) | Amount In Words | Remarks |
+| -------------- | ------------- | ----------------- | ---------------- | ------ | ------ | ---- | ------------------- | -------------- | ----- | ------------- | --------------- | --------------- | ------- |
+
 
 ### Success Response
 ```json
