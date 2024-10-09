@@ -1,10 +1,10 @@
 // const { ExcelRepository } = require("../repository/index");
 import excelRepository from "../repository/excel-repository";
 const excelServices = {
-  async uploadMsiExcel(data: {}) {
-    console.log("in servicees: ", data);
+  async uploadMsiExcel(id:String,data: {}) {
+    // console.log("in servicees: ", data);
     try {
-      return await excelRepository.uploadMsiFile(data);
+      return await excelRepository.uploadMsiFile(id,data);
     } catch (error) {
       throw error;
     }

@@ -28,6 +28,13 @@ const feeServices = {
       throw error;
     }
   },
+  async updateOtherFee(ID:String,data: {}) {
+    try {
+      return await feeRepository.updateOtherFee(ID,data);
+    } catch (error) {
+      throw error;
+    }
+  },
   async uploadStudentSch(ID:String,data: {}) {
     try {
       return await feeRepository.uploadStudentSch(ID,data);
@@ -67,10 +74,28 @@ const feeServices = {
     }
 
   },
+  async getAllStudentsOtherFee()
+  {
+    try {
+      // console.log("in services");
+      return await feeRepository.getAllStudentsOtherFee()
+    } catch (error) {
+      throw error;
+    }
+
+  },
 
   async getStudentFee(ID: String) {
     try {
       return await feeRepository.getStudentFee(ID);
+    } catch (error) {
+      throw error;
+    }
+  },
+  async getStudentOtherFee(ID: String) {
+    try {
+      return  await feeRepository.getStudentOtherFee(ID);
+      
     } catch (error) {
       throw error;
     }
@@ -82,8 +107,16 @@ const feeServices = {
       throw error;
     }
   },
+  async getOtherFromMSI(ID: String) {
+    try {
+      return await feeRepository.getOtherFromMSI(ID);
+    } catch (error) {
+      throw error;
+    }
+  },
   async getStudentSch(ID: String) {
     try {
+      
       return await feeRepository.getStudentSch(ID);
     } catch (error) {
       throw error;

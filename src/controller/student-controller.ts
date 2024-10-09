@@ -4,6 +4,7 @@ import XLSX from "xlsx";
 import { excelUtils } from "../utils/excelUtils";
 import feeServices from "../services/fee-service";
 import { stat } from "fs";
+import OtherFromMSI from "../models/OtherFromMSI";
 interface ReceiptDetail {
   ReceiptNo?: string;
   Date?: string;
@@ -44,10 +45,10 @@ const studentController = {
         if (array.length == 0) {
           for (const item of response) {
             try {
-              let ID=""
-              if(item.ID)
-                ID=item.ID
-              const response = await studentServices.uploadStudentsData(ID,item);
+              let ID = ""
+              if (item.ID)
+                ID = item.ID
+              const response = await studentServices.uploadStudentsData(ID, item);
               items.push(response);
             } catch (error) {
               throw error;
@@ -63,13 +64,13 @@ const studentController = {
           });
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       return res.status(500).send(error);
     }
   },
 
   async getStudentById(req: Request, res: Response) {
-    console.log(req.params.id);
+    // console.log(req.params.id);
     try {
       const response = await studentServices.getStudentById(req.params.id);
       if (response.status === 200) {
@@ -87,14 +88,39 @@ const studentController = {
         return res.status(404).json({ message: "student not found" });
       }
       const tutionFee = await feeServices.getStudentFee(req.params.id);
-      const hostelFee=await feeServices.getStudentHostelFee(req.params.id);
+      const hostelFee = await feeServices.getStudentHostelFee(req.params.id);
+      const otherFee=await feeServices.getStudentOtherFee(req.params.id)
       const sch = await feeServices.getStudentSch(req.params.id);
       const loan = await feeServices.getStudentLoan(req.params.id);
-      return res.status(200).json({ student, tutionFee, hostelFee,sch, loan  });
+      return res.status(200).json({ student, tutionFee, hostelFee,otherFee, sch, loan });
     } catch (error) {
       throw error;
     }
   },
+  async getStudentOtherFee(req: Request, res: Response) {
+    try {
+      const response = await feeServices.getStudentOtherFee(req.params.id);
+      if (response.status === 404) {
+        return res.status(404).json({ message: "student not found" });
+      }
+      
+      return res.status(200).json(response);
+    } catch (error) {
+      throw error;
+    }
+  },
+  async getAllStudentsOtherFee(req: Request, res: Response) {
+    try {
+      // console.log("Entered")
+      const response=await feeServices.getAllStudentsOtherFee()
+      // console.log(response)
+      return res.status(200).json(response);
+    } catch (error) {
+      // console.log(error)
+      throw error;
+    }
+  },
+
   async getAllStudents(req: Request, res: Response) {
     try {
       const ID = (req.query.ID as string | undefined) ?? "";
@@ -144,21 +170,21 @@ const studentController = {
       res.status(500).json({ error: error });
     }
   },
-  async addTutionFeeInstallment(req:CustomRequestForFile,res:Response)
-  {
+  async addTutionFeeInstallment(req: CustomRequestForFile, res: Response) {
     try {
       const id = req.body.ID;
       const receiptNo = req.body.ReceiptNo;
       const date = req.body.Date;
       const amount = req.body.Amount;
-      let imageBase64 = req.fileBase64; 
-  
-      console.log(req.body)
+      let imageBase64 = req.fileBase64;
+      
+
+      // console.log(req.body)
       // Validate input
       if (!id || !receiptNo || !date || !amount) {
-        return res.status(400).json({ error: "ID, ReceiptNo, Date, and Amount are required."});
+        return res.status(400).json({ error: "ID, ReceiptNo, Date, and Amount are required." });
       }
-      
+
       // Create newInstallment object
       const newInstallment = {
         ReceiptNo: receiptNo,
@@ -168,40 +194,42 @@ const studentController = {
 
       
 
-     const tutionFee=await feeServices.getStudentFee(id);
-     const sch = await feeServices.getStudentSch(id);
-     tutionFee.installments.push(newInstallment)
-     tutionFee.Total=tutionFee.Total+newInstallment.Amount
 
-     
-     sch.FeePaidbyTheStudent=sch.FeePaidbyTheStudent+newInstallment.Amount
-     sch.TotalFeePaid+=newInstallment.Amount
-     sch.RemainingBalance=sch.ActualPay-sch.TotalFeePaid
+      const tutionFee = await feeServices.getStudentFee(id);
+      // console.log(tutionFee)
+      const sch = await feeServices.getStudentSch(id);
+      tutionFee.installments.push(newInstallment)
+      tutionFee.Total = tutionFee.Total + newInstallment.Amount
 
-     
 
-     const updatedTutionFee=await feeServices.updateStudentTutionFee(id,tutionFee)
-     const updatedsch=await feeServices.updateStudentSch(id,sch)
-      if(!imageBase64) imageBase64=""
+      sch.FeePaidbyTheStudent = sch.FeePaidbyTheStudent + newInstallment.Amount
+      sch.TotalFeePaid += newInstallment.Amount
+      sch.RemainingBalance = sch.ActualPay - sch.TotalFeePaid
 
-      
 
-     const newDueAddedResponse = await feeServices.addNewDueNumber(
-      id,
-      newInstallment.Amount,
-      imageBase64, // Non-null assertion (ensure it's not null or undefined)
-      "Tuition Fee",
-      newInstallment.ReceiptNo
-    );
 
-    
+      const updatedTutionFee = await feeServices.updateStudentTutionFee(id, tutionFee)
+      const updatedsch = await feeServices.updateStudentSch(id, sch)
+      if (!imageBase64) imageBase64 = ""
 
-    // Send a successful response with the updated records
-    return res.status(200).json({ updatedTutionFee, updatedsch, newDueAddedResponse });
-    
+
+
+      const newDueAddedResponse = await feeServices.addNewDueNumber(
+        id,
+        newInstallment.Amount,
+        imageBase64, // Non-null assertion (ensure it's not null or undefined)
+        "Tuition Fee",
+        newInstallment.ReceiptNo
+      );
+
+
+
+      // Send a successful response with the updated records
+      return res.status(200).json({ updatedTutionFee, updatedsch, newDueAddedResponse });
+
 
     } catch (error) {
-      console.log(" Not Success")
+      // console.log(" Not Success")
       res.status(500).json({ error: error });
     }
   },
@@ -212,39 +240,39 @@ const studentController = {
       const receiptNo = req.body.ReceiptNo;
       const date = req.body.Date;
       const amount = req.body.Amount;
-      let imageBase64 = req.fileBase64; 
-  
-      console.log(req.body)
+      let imageBase64 = req.fileBase64;
+
+      // console.log(req.body)
       // Validate input
       if (!id || !receiptNo || !date || !amount) {
-        return res.status(400).json({ error: "ID, ReceiptNo, Date, and Amount are required."});
+        return res.status(400).json({ error: "ID, ReceiptNo, Date, and Amount are required." });
       }
-      
+
       // Create newInstallment object
       const newInstallment = {
         ReceiptNo: receiptNo,
         Date: date,
         Amount: parseInt(amount) // Ensure amount is an integer
       };
-  
+
       // Fetch hostel fee and student scholarship
       const hostelFee = await feeServices.getStudentHostelFee(id);
       const sch = await feeServices.getStudentSch(id);
-  
+
       // Update hostel fee and scholarship details
       hostelFee.installments.push(newInstallment);
       hostelFee.Total += newInstallment.Amount;
       sch.FeePaidbyTheStudent += newInstallment.Amount;
       sch.TotalFeePaid += newInstallment.Amount;
       sch.RemainingBalance = sch.ActualPay - sch.TotalFeePaid;
-  
+
       // Update records in the database
       const updatedHostelFee = await feeServices.updateStudentHostelFee(id, hostelFee);
       const updatedsch = await feeServices.updateStudentSch(id, sch);
-      
+
       // Handle image base64
       if (!imageBase64) imageBase64 = ""; // Default to empty string if no image
-  
+
       // Add new due number
       const newDueAddedResponse = await feeServices.addNewDueNumber(
         id,
@@ -253,26 +281,138 @@ const studentController = {
         "Hostel Fee",
         newInstallment.ReceiptNo
       );
-  
+
       // Return response
       return res.status(200).json({ updatedHostelFee, updatedsch, newDueAddedResponse });
     } catch (error) {
       console.error("Error in addHostelFeeInstallment:", error); // Log the error for debugging
-      res.status(500).json({ error});
+      res.status(500).json({ error });
     }
   },
-  async getAllAddedDues(req:Request,res:Response)
-  {
-    try{
-      const response= await feeServices.getAllAddedDueNumbers()
+  async getAllAddedDues(req: Request, res: Response) {
+    try {
+      const response = await feeServices.getAllAddedDueNumbers()
       res.status(200).json(response)
 
-    }catch(error)
+    } catch (error) {
+      res.status(500).json({ error })
+    }
+  },
+
+  async addNewMSI(
+    CategoryName: string | undefined,
+    BankReferenceNo: string | undefined,
+    Date: string | undefined,
+    IDNo: string | undefined,
+    Amount: number | undefined
+  ) {
+
+    try{
+      
+      if (!CategoryName || !BankReferenceNo || !Date || !IDNo || !Amount) {
+        return null;
+      }
+
+    let newInstallment = {
+      ReceiptNo: BankReferenceNo,
+      Date,
+      Amount
+    };
+
+    if (CategoryName?.includes("Tution Fee") || CategoryName?.includes("Vidya Deevena")) {
+      // console.log("Tution Fee");
+
+      // Fetch tuition fee and scholarship details
+      const tutionFee = await feeServices.getStudentFee(IDNo ? IDNo : "");
+      const sch = await feeServices.getStudentSch(IDNo ? IDNo : "");
+
+      // Check if the installment with the same ReceiptNo already exists
+      const receiptExists = tutionFee.installments.some(
+        (installment: { ReceiptNo: string }) => installment.ReceiptNo === newInstallment.ReceiptNo
+      );
+
+      if (!receiptExists) {
+        // Add new installment if the ReceiptNo doesn't exist
+        tutionFee.installments.push(newInstallment);
+        tutionFee.Total = tutionFee.Total + newInstallment.Amount;
+
+        // Update scholarship details
+        sch.FeePaidbyTheStudent = sch.FeePaidbyTheStudent + newInstallment.Amount;
+        sch.TotalFeePaid += newInstallment.Amount;
+        sch.RemainingBalance = sch.ActualPay - sch.TotalFeePaid;
+
+        // Update the fee and scholarship information in the database
+        const updatedTutionFee = await feeServices.updateStudentTutionFee(IDNo ? IDNo : "", tutionFee);
+        const updatedsch = await feeServices.updateStudentSch(IDNo ? IDNo : "", sch);
+        // console.log(updatedsch)
+      } else {
+        // console.log("Installment with the same ReceiptNo already exists.");
+      }
+    }
+    else if (CategoryName?.includes("Hostel Fee") || CategoryName?.includes("Vasathi Deevena")) {
+      // console.log("Hostel Fee");
+
+      // Fetch hostel fee and scholarship details
+      const hostelFee = await feeServices.getStudentHostelFee(IDNo ? IDNo : "");
+      const sch = await feeServices.getStudentSch(IDNo ? IDNo : "");
+
+      // Check if the installment with the same ReceiptNo already exists
+      const receiptExists = hostelFee.installments.some(
+        (installment: { ReceiptNo: string }) => installment.ReceiptNo === newInstallment.ReceiptNo
+      );
+
+      if (!receiptExists) {
+        // Add new installment if the ReceiptNo doesn't exist
+        hostelFee.installments.push(newInstallment);
+        hostelFee.Total += newInstallment.Amount;
+
+        // Update scholarship details
+        sch.FeePaidbyTheStudent += newInstallment.Amount;
+        sch.TotalFeePaid += newInstallment.Amount;
+        sch.RemainingBalance = sch.ActualPay - sch.TotalFeePaid;
+
+        // Update the hostel fee and scholarship information in the database
+        const updatedHostelFee = await feeServices.updateStudentHostelFee(IDNo ? IDNo : "", hostelFee);
+        const updatedsch = await feeServices.updateStudentSch(IDNo ? IDNo : "", sch);
+      } else {
+        // console.log("Installment with the same ReceiptNo already exists.");
+      }
+    }
+    else {
+      let newInstallment={
+        ReceiptNo: BankReferenceNo,
+        Date,
+        Amount,
+        category:CategoryName
+      };
+      // console.log("Others");
+      const otherFee = await feeServices.getOtherFromMSI(IDNo ? IDNo : "");
+      // Check if the installment with the same ReceiptNo already exists
+      const receiptExists = otherFee.installments.some(
+        (installment: { ReceiptNo: string }) => installment.ReceiptNo === newInstallment.ReceiptNo
+      );
+
+      if (!receiptExists) {
+        // Add new installment if the ReceiptNo doesn't exist
+        otherFee.installments.push(newInstallment);
+        otherFee.Total += newInstallment.Amount;
+        // Update the hostel fee and scholarship information in the database
+        const updatedOtherFee = await feeServices.updateOtherFee(IDNo ? IDNo : "", otherFee);
+      } else {
+        // console.log("Installment with the same ReceiptNo already exists.");
+      }
+    }
+
+    }
+    catch(error)
     {
-      res.status(500).json({error})
+      // console.log(error)
+      throw error
+
     }
   }
-  
+
+
 };
 
 export default studentController;

@@ -1,5 +1,6 @@
 import CrudRepository from "./crud-repository";
 import { Student } from "../models";
+import OtherFromMSI from "../models/OtherFromMSI";
 const studentRepository = {
   async uploadStudentsData(ID: String, data: {}) {
     try {
@@ -29,6 +30,9 @@ const studentRepository = {
       throw error;
     }
   },
+
+  
+ 
 
   async updateStudentById(ID: String, data: {}) {
     try {

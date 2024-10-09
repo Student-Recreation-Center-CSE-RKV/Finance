@@ -54,12 +54,12 @@ const CrudRepository = {
     }
   },
   async update(model: Model<any>, ID: String, data: {}) {
-    console.log(data)
+    // console.log(data)
     try {
       const response = await model.findOneAndUpdate({ ID }, data, {
         new: true,
       });
-      console.log("in repo res:", response);
+      // console.log("in repo res:", response);
       return response;
     } catch (error) {
       return error;
@@ -69,7 +69,7 @@ const CrudRepository = {
   async uploadExcel(model: Model<any>, data: {}) {
     // console.log("in repo: ", data);
     try {
-      console.log(data)
+      // console.log(data)
       const response = await model.create(data);
       return response;
     } catch (error) {
@@ -84,7 +84,27 @@ const CrudRepository = {
     } catch (error) {
       return false;
     }
+  },
+  async containsDue(model: Model<any>, BankReferenceNo: String) {
+    try {
+      const existingDocument = await model.findOne({ BankReferenceNo });
+      return existingDocument
+    } catch (error) {
+      return false;
+    }
+  },
+  async updateDue(model: Model<any>, BankReferenceNo: String, data: {}) {
+    try {
+      const response = await model.findOneAndUpdate({ BankReferenceNo }, data, {
+        new: true,
+      });
+      // console.log("in repo res:", response);
+      return response;
+    } catch (error) {
+      return error;
+    }
   }
+
 };
 
 export default CrudRepository;

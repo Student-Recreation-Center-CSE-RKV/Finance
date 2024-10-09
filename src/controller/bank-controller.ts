@@ -9,7 +9,7 @@ const bankController = {
       const response = await bankServices.getBankDueDetails(
         req.params.ReceiptNo
       );
-      console.log(response);
+      // console.log(response);
       if (response.status === 200) {
         return res.status(200).json(response);
       } else {

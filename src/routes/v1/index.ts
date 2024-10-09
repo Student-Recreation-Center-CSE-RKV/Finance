@@ -68,23 +68,22 @@ v1Routes.post(
 );
 v1Routes.get("/bank/due/:ReceiptNo", bankController.getBankDueDetails);
 
-// v1Routes.post(
-//   "/upload/hostel/student",
-//   upload.single("file"),
-//   studentController.uploadStudentsHostelData
-// );
+
 
 v1Routes.get("/student/:id", studentController.getStudentById);
-v1Routes.put("/student/update/:id",studentController.updateStudent)
+v1Routes.put("/student/update/:id", studentController.updateStudent)
 
 
 v1Routes.get("/student/fee/:id", studentController.getStudentFeeDetails);
 
 v1Routes.get("/students", studentController.getAllStudents);
 
-v1Routes.get("/graph/batch",graphController.batchWiseTotalData);
+// v1Routes.get("/students/fee/otherFee", studentController.getAllStudentsOtherFee);
+// v1Routes.get("/students/fee/otherFee/:id", studentController.getStudentOtherFee);
 
-v1Routes.get("/graph/category/:batchYear",graphController.categoryWiseTotalData)
+v1Routes.get("/graph/batch", graphController.batchWiseTotalData);
+
+v1Routes.get("/graph/category/:batchYear", graphController.categoryWiseTotalData)
 
 v1Routes.put("/update/student/:id", studentController.updateStudent);
 
@@ -106,7 +105,7 @@ v1Routes.put(
 
 
 v1Routes.get(
-  "/getAllAddedDues",studentController.getAllAddedDues
+  "/getAllAddedDues", studentController.getAllAddedDues
 )
 
 export default v1Routes;

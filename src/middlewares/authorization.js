@@ -16,7 +16,7 @@ const authenticate = async (req, res, next) => {
         
         const decoded = jwt.verify(token, JWT_KEY);
         req.user = decoded; // Attach user data to request object
-        console.log(decoded);
+        // console.log(decoded);
         next();
     } catch (error) {
         return res.status(401).json({ message: 'Invalid token' });
@@ -24,7 +24,7 @@ const authenticate = async (req, res, next) => {
 };
 
 const authorizeAdmin = (req, res, next) => {
-    console.log(req.user);
+    // console.log(req.user);
     if (req.user && req.user.role === 'admin') {
         next();
     } else {

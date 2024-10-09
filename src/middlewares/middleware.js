@@ -40,7 +40,7 @@ const userMiddleware = (req, res, next) => {
 
 const adminMiddleware = (req, res, next) => {
   // Log the req.user object for debugging
-  console.log('User object:', req.user);
+  // console.log('User object:', req.user);
 
   // Your admin middleware logic here
   if (req.user.role !== 'admin') {

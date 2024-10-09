@@ -1,5 +1,6 @@
 import CrudRepository from "./crud-repository";
 import { TutionFee, StudentSch, Loan,HostelFee,AddedDues } from "../models";
+import OtherFromMSI from "../models/OtherFromMSI";
 const feeRepository = {
   async uploadStudentFee(ID: String, data: {}) {
     try {
@@ -20,9 +21,23 @@ const feeRepository = {
       throw error;
     }
   },
+  async getStudentOtherFee(ID: String) {
+    try {
+      return await CrudRepository.findBy(OtherFromMSI, { ID });
+    } catch (error) {
+      throw error;
+    }
+  },
   async updateStudentHostelFee(ID: String, data: {}) {
     try {
         return await CrudRepository.update(HostelFee, ID, data);
+    } catch (error) {
+      throw error;
+    }
+  },
+  async updateOtherFee(ID: String, data: {}) {
+    try {
+        return await CrudRepository.update(OtherFromMSI, ID, data);
     } catch (error) {
       throw error;
     }
@@ -84,8 +99,22 @@ const feeRepository = {
   },
   async getStudentFee(ID: String) {
     try {
-      return await CrudRepository.findBy(TutionFee, { ID });
+      
+      const response= await CrudRepository.findBy(TutionFee, { ID });
+      // console.log(response)
+      if(response)
+      {
+        return response
+      }
+      else
+      {
+        
+        const rresponse=await CrudRepository.create(TutionFee,{ID:ID,BATCH:0,Total:0,installments:[],admissionFee:[],reAdmissionFee:[],cautionDeposit:[]})
+        
+        return rresponse;
+      }
     } catch (error) {
+      
       throw error;
     }
   },
@@ -96,9 +125,41 @@ const feeRepository = {
       throw error;
     }
   },
+  async getOtherFromMSI(ID: String) {
+    try {
+      const response= await CrudRepository.findBy(OtherFromMSI, { ID });
+      if(response)
+        return response;
+      else
+      {
+        const rresponse=await CrudRepository.create(OtherFromMSI,{ID:ID,Total:0,installments:[]})
+        return rresponse;
+      }
+    } catch (error) {
+      throw error;
+    }
+  },
   async getStudentSch(ID: String) {
     try {
-      return await CrudRepository.findBy(StudentSch, { ID });
+      
+      const response= await CrudRepository.findBy(StudentSch, { ID });
+      if(response)
+        return response;
+      else
+      {
+        const rresponse=await CrudRepository.create(StudentSch,{ID: ID,
+          BATCH: 0,
+          TotalSch: 0,
+          OtherSch: 0,
+          FeePaidbyTheStudent: 0,
+          TotalFeePaid: 0,
+          ActualPay: 0,
+          RemainingBalance: 0,
+          RefundAmount: 0,
+          academicYears: []})
+        return rresponse;
+      }
+      
     } catch (error) {
       throw error;
     }
@@ -115,6 +176,17 @@ const feeRepository = {
       // Fetch all dues, sorting by 'addedOn' in descending order (recent first)
       const dues = await AddedDues.find({}).sort({ addedOn: -1 });
       return dues;
+    } catch (error) {
+      throw error;
+    }
+  },
+  async getAllStudentsOtherFee() {
+    try {
+      // console.log("Entered")
+      
+      const res = await OtherFromMSI.find({});
+      // console.log(dues)
+      return res;
     } catch (error) {
       throw error;
     }

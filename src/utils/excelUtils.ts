@@ -72,10 +72,31 @@ export interface Loan {
   acYears: loanDetails[];
 }
 
+
+// Helper function to convert Excel serial date to a JS Date string
+const excelDateToJSDate = (serial: number): string => {
+  const epoch = new Date(1899, 11, 30); // Excel dates start on Dec 30, 1899
+  let days = serial;
+
+  // Excel leap year bug fix: if serial >= 60, add 1 day
+  if (serial >= 60) {
+    days += 1;
+  }
+
+  const date = new Date(epoch.getTime() + days * 86400000); // Convert serial to milliseconds
+
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+  const day = String(date.getUTCDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`; // Return in 'YYYY-MM-DD' format
+};
+
+
 const excelUtils = {
   async parseMsiExcelToJson(filePath: string): Promise<ExcelItem[]> {
     try {
-      console.log(filePath);
+      // console.log(filePath);
       const workbook = XLSX.readFile(filePath);
       const sheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
@@ -99,14 +120,25 @@ const excelUtils = {
           AmountInWords,
           Remarks,
         } = item;
+
+        let Transaction_date=TransactionDate
+        if (TransactionDate && typeof TransactionDate === "number") {
+          Transaction_date = excelDateToJSDate(TransactionDate);
+        }
+
+        let date=Date
+        if (Date && typeof Date === "number") {
+          date = excelDateToJSDate(Date);
+        }
+
         items.push({
           CategoryName,
           PaymentMode,
           BankReferenceNo,
-          TransactionDate,
+          TransactionDate:Transaction_date,
           Amount,
           Status,
-          Date,
+          Date:date,
           NameoftheStudent,
           ClassAndYear,
           IDNo,
