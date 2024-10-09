@@ -23,6 +23,14 @@ A project for the finance office of our college. The API allows users to upload 
 |-----------------------------------------|--------|-------------------------------------------------------|
 | `/api/v1/upload/student/details`       | POST   | Upload student details Excel file.                   |
 
+## Student Details Excel Header Format
+
+The Excel file for uploading student details should have the following headers:
+
+| S.No. | ROLL No. | NAME AS PER SSC RECORDS | Father Name | GENDER | CASTE | TC | BATCH |
+|-------|----------|-------------------------|-------------|--------|-------|----|-------|
+
+
 ### Success Response
 ```json
 {
@@ -79,4 +87,27 @@ A project for the finance office of our college. The API allows users to upload 
     ...
 ]
 ```
+| Endpoint                                | Method | Description                                           |
+|-----------------------------------------|--------|-------------------------------------------------------|
+| `/api/v1/upload/student/hostelFee`     | POST   | Upload hostel fee details for students.              |
+
+### Success Response
+```json
+{
+    "_id": "66f1435612a85def5213d65a",
+    "ID": "R081001",
+    "BATCH": 2008,
+    "Total": 18000,
+    "installments": [
+        {
+            "ReceiptNo": "DUD9266337",
+            "Date": "07.12.2020",
+            "Amount": "18000",
+            "_id": "67066ee76c7adcad3f3f8cc9"
+        }
+    ],
+    "__v": 0
+}
+```
+
 
