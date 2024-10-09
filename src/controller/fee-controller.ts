@@ -8,7 +8,7 @@ const feeController = {
       if (req.file) {
         const filePath = req.file.path;
         const response = await excelUtils.parseStudentFee(filePath);
-        console.log(response)
+        // console.log(response)
         for (const item of response) {
           try {
             let ID=""
@@ -23,7 +23,7 @@ const feeController = {
         res.status(200).send(items);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       res.status(500).send(error);
     }
   },
@@ -48,7 +48,7 @@ const feeController = {
         res.status(200).send(items);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       res.status(500).send(error);
     }
   },
@@ -73,7 +73,7 @@ const feeController = {
         res.status(200).send({ message: "Succesfully uploaded data" });
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       res.status(500).send(error);
     }
   },
@@ -116,7 +116,7 @@ const feeController = {
         
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       res.status(500).send(error);
     }
   },

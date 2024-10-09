@@ -64,13 +64,13 @@ const studentController = {
           });
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       return res.status(500).send(error);
     }
   },
 
   async getStudentById(req: Request, res: Response) {
-    console.log(req.params.id);
+    // console.log(req.params.id);
     try {
       const response = await studentServices.getStudentById(req.params.id);
       if (response.status === 200) {
@@ -116,7 +116,7 @@ const studentController = {
       // console.log(response)
       return res.status(200).json(response);
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       throw error;
     }
   },
@@ -196,7 +196,7 @@ const studentController = {
 
 
       const tutionFee = await feeServices.getStudentFee(id);
-      console.log(tutionFee)
+      // console.log(tutionFee)
       const sch = await feeServices.getStudentSch(id);
       tutionFee.installments.push(newInstallment)
       tutionFee.Total = tutionFee.Total + newInstallment.Amount
@@ -229,7 +229,7 @@ const studentController = {
 
 
     } catch (error) {
-      console.log(" Not Success")
+      // console.log(" Not Success")
       res.status(500).json({ error: error });
     }
   },
@@ -242,7 +242,7 @@ const studentController = {
       const amount = req.body.Amount;
       let imageBase64 = req.fileBase64;
 
-      console.log(req.body)
+      // console.log(req.body)
       // Validate input
       if (!id || !receiptNo || !date || !amount) {
         return res.status(400).json({ error: "ID, ReceiptNo, Date, and Amount are required." });
@@ -344,13 +344,13 @@ const studentController = {
         // Update the fee and scholarship information in the database
         const updatedTutionFee = await feeServices.updateStudentTutionFee(IDNo ? IDNo : "", tutionFee);
         const updatedsch = await feeServices.updateStudentSch(IDNo ? IDNo : "", sch);
-        console.log(updatedsch)
+        // console.log(updatedsch)
       } else {
-        console.log("Installment with the same ReceiptNo already exists.");
+        // console.log("Installment with the same ReceiptNo already exists.");
       }
     }
     else if (CategoryName?.includes("Hostel Fee") || CategoryName?.includes("Vasathi Deevena")) {
-      console.log("Hostel Fee");
+      // console.log("Hostel Fee");
 
       // Fetch hostel fee and scholarship details
       const hostelFee = await feeServices.getStudentHostelFee(IDNo ? IDNo : "");
@@ -375,7 +375,7 @@ const studentController = {
         const updatedHostelFee = await feeServices.updateStudentHostelFee(IDNo ? IDNo : "", hostelFee);
         const updatedsch = await feeServices.updateStudentSch(IDNo ? IDNo : "", sch);
       } else {
-        console.log("Installment with the same ReceiptNo already exists.");
+        // console.log("Installment with the same ReceiptNo already exists.");
       }
     }
     else {
@@ -385,7 +385,7 @@ const studentController = {
         Amount,
         category:CategoryName
       };
-      console.log("Others");
+      // console.log("Others");
       const otherFee = await feeServices.getOtherFromMSI(IDNo ? IDNo : "");
       // Check if the installment with the same ReceiptNo already exists
       const receiptExists = otherFee.installments.some(
@@ -399,14 +399,15 @@ const studentController = {
         // Update the hostel fee and scholarship information in the database
         const updatedOtherFee = await feeServices.updateOtherFee(IDNo ? IDNo : "", otherFee);
       } else {
-        console.log("Installment with the same ReceiptNo already exists.");
+        // console.log("Installment with the same ReceiptNo already exists.");
       }
     }
 
     }
     catch(error)
     {
-      console.log(error)
+      // console.log(error)
+      throw error
 
     }
   }

@@ -94,14 +94,14 @@ const userController = {
     try {
       const token = req.params.token;
       const response = await userService.verifyUser(token);
-      console.log("RES:s", response);
+      // console.log("RES:s", response);
       if (response.isVerified) {
         const userProfile = await userProfileService.createUserProfile({
           name: response.name,
           email: response.email,
           userId: response._id,
         });
-        console.log("Profile:", userProfile);
+        // console.log("Profile:", userProfile);
       }
 
       return res.status(201).json({
@@ -164,7 +164,7 @@ const userController = {
   async updateDetails(req, res) {
     try {
       const userData = req.body;
-      console.log("user data in controller", req.params.token, userData);
+      // console.log("user data in controller", req.params.token, userData);
       const response = await userService.updateDetails(
         req.params.token,
         userData
