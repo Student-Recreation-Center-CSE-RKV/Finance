@@ -28,7 +28,7 @@ A project for the finance office of our college. The API allows users to upload 
 {
     "message": "successfully uploaded student Details"
 }
-
+```
 
 | Endpoint                                | Method | Description                                           |
 |-----------------------------------------|--------|-------------------------------------------------------|
@@ -78,4 +78,5 @@ A project for the finance office of our college. The API allows users to upload 
     },
     ...
 ]
+```
 
