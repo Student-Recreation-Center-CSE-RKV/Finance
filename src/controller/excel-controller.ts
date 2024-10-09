@@ -1,6 +1,7 @@
 import { excelServices } from "../services/index";
 import { Response, Request } from "express";
 import { excelUtils } from "../utils/excelUtils";
+import studentController from "./student-controller";
 const excelController = {
   async uploadMsiExcel(req: Request, res: Response) {
     try {
@@ -10,14 +11,19 @@ const excelController = {
         const results = [];
         for (const item of response) {
           try {
-            const result = await excelServices.uploadMsiExcel(item);
+
+            // console.log(item)
+
+            let id=(item.BankReferenceNo)?item.BankReferenceNo:""
+            const result = await excelServices.uploadMsiExcel(id,item);
+            studentController.addNewMSI(item.CategoryName,item.BankReferenceNo,item.TransactionDate,item.IDNo,item.Amount)
             results.push(result);
           } catch (error) {
             console.error(`Failed to upload item: ${item}`, error);
           }
         }
 
-        return res.status(201).json(results);
+        return res.status(200).json(results);
       } else {
         return res.status(400).json({ error: "No file uploaded" });
       }
