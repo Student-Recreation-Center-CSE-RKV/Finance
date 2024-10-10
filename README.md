@@ -48,9 +48,8 @@ The Excel file for uploading student details should have the following headers:
 
 The Excel file for uploading tuition fee details should have the following headers:
 
-| S.No | I.D NO | Student Name | Father Name | BATCH | Gender | Category | Admission Fee Receipt No. | Admission Fee Date | Admission Fee Amount | Re Admission Fee Receipt No. | Re Admission Fee Date | Re Admission Fee Amount | Caution Deposit Receipt No. | Caution Deposit Date | Caution Deposit Amount | 1st Installment Receipt No. | 1st Installment Date | 1st Installment Amount | 2nd Installment Receipt No. | 2nd Installment Date | 2nd Installment Amount | 3rd Installment Receipt No. | 3rd Installment Date | 3rd Installment Amount | Total |
-|------|--------|--------------|-------------|-------|--------|----------|--------------------------|-------------------|---------------------|-------------------------------|---------------------|-----------------------|-------------------------------|---------------------|-----------------------|-------------------------------|---------------------|-----------------------|-------------------------------|---------------------|-----------------------|-------------------------------|---------------------|-----------------------|-------|
-|      |        |              |             |       |        |          |                          |                   |                     |                               |                     |                       |                               |                     |                       |                               |                     |                       |                               |                     |                       |                               |                     |                       |       |
+![TutionFee  Header first half](https://github.com/revanthkumarJ/Finance-API/blob/main/TutionFeeHeader1.png)
+![TutionFee  Header second half](https://github.com/revanthkumarJ/Finance-API/blob/main/TutionFeeHeader2.png)
 
 ### Success Response
 ```json
@@ -104,12 +103,8 @@ The Excel file for uploading tuition fee details should have the following heade
 ## Hostel Fee Excel Header Format
 
 The Excel file for uploading hostel fee details should have the following headers:
+![TutionFee  Header first half](https://github.com/revanthkumarJ/Finance-API/blob/main/HostelFeeHeader.png)
 
-| S.No | I.D NO | Student Name | Father Name | BATCH | Gender | Category | 1st Installment Receipt No. | 1st Installment Date | 1st Installment Amount | 2nd Installment Receipt No. | 2nd Installment Date | 2nd Installment Amount | 3rd Installment Receipt No. | 3rd Installment Date | 3rd Installment Amount | Total |
-|------|--------|--------------|-------------|-------|--------|----------|------------------------------|----------------------|------------------------|-------------------------------|-----------------------|------------------------|-------------------------------|---------------------|-----------------------|-------|
-|      |        |              |             |       |        |          |                              |                      |                        |                               |                       |                        |                               |                     |                       |       |
-
-The installments should be merged like in image 
 
 ### Success Response
 ```json
@@ -135,9 +130,9 @@ The installments should be merged like in image
 | `/api/v1/upload/student/sch`            | POST   | Upload scholarship data Excel file.                   |
 
 ## Scholarship header format
-| S.No. | ROLL No. | BATCH | 2008-09 | 2008-09 | 2009-10 | 2009-10 | 2010-11 | 2010-11 | 2011-12 | 2011-12 | 2012-13 | 2012-13 | 2013-14 | 2013-14 | 2014-15 | 2014-15 | 2015-16 | 2015-16 | 2016-17 | 2016-17 | Total Sch | Other Sch | Fee Paid by the Student | Total Fee Paid | Actual Pay | Remaining Balance | Refund Amount | TC |
-| ----- | -------- | ----- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | -------- | -------- | ---------------------- | -------------- | ---------- | ---------------- | -------------- | -- |
-|       |          |       | Actual Pay | Sch Received | Actual Pay | Sch Received | Actual Pay | Sch Received | Actual Pay | Sch Received | Actual Pay | Sch Received | Actual Pay | Sch Received | Actual Pay | Sch Received | Actual Pay | Sch Received | Actual Pay | Sch Received |          |          |                        |                |            |                  |                |    |
+
+![Scholarship  Header first half](https://github.com/revanthkumarJ/Finance-API/blob/main/scholarShipHeader1.png)
+![Scholarship  Header first half](https://github.com/revanthkumarJ/Finance-API/blob/main/scholarShipHeader2.png)
 
 
 ### Success Response
@@ -152,10 +147,7 @@ The installments should be merged like in image
 
 ## Loan Header Format
 
-| S.No. | ROLL No. | 2008-09                  | 2009-10                  | 2010-11                  | 2011-12                  | 2012-13                  | 2013-14                  | Grand Total              | Refund P1 | Refund P1 |
-| ----- | -------- | ------------------------ | ------------------------ | ------------------------ | ------------------------ | ------------------------ | ------------------------ | ------------------------ | --------- | --------- |
-|       |          | Loan | Direct Bank | Others | Total | Loan | Others | Total | Loan | Others | Total | Loan | Others | Total | Loan | Others | Total | Loan | Others | Total |
-|       |          |      |              |        |       |      |        |       |      |        |       |      |        |       |      |        |       |      |        |       |
+![Loan Header](https://github.com/revanthkumarJ/Finance-API/blob/main/LoanHeader.png)
 
 
 ### Success Response
