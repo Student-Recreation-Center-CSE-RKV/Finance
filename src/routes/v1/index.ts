@@ -7,6 +7,7 @@ import feeController from "../../controller/fee-controller";
 import bankController from "../../controller/bank-controller";
 import graphController from "../../controller/graphController";
 import convertImageToBase64 from '../../middlewares/base64';
+import userController from "../../controller/user-controller";
 // const {
 //   validateUserAuth,
 //   validateisAdminId,
@@ -29,6 +30,9 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // router.post("/upload", upload.single("file"), excelController.uploadExcel);
+
+v1Routes.post("/signup",userController.signup)
+v1Routes.post("/login",userController.login)
 
 v1Routes.post(
   "/upload/msi",
@@ -114,6 +118,6 @@ v1Routes.put(
   studentController.addHostelFeeInstallment // Controller to handle the request
 );
 
-
+v1Routes.put("/update/studentFee/exchange",studentController.exchangeInstallment)
 
 export default v1Routes;
