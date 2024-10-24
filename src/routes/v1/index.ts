@@ -118,6 +118,6 @@ v1Routes.put(
   studentController.addHostelFeeInstallment // Controller to handle the request
 );
 
-
+v1Routes.put("/update/studentFee/exchange",studentController.exchangeInstallment)
 
 export default v1Routes;
