@@ -300,6 +300,43 @@ const studentController = {
       res.status(500).json({ error })
     }
   },
+  async getDuesBasedOnFee(req: Request, res: Response) {
+    try {
+      const { model, ID } = req.params;
+      const modelsMap: any = {
+        TutionFeeSchema,
+        HostelFeeSchema,
+        OtherFromMSI,
+      };
+      // console.log(model,ID)
+      // Check if the provided model is valid
+      if (!modelsMap[model]) {
+        return res.status(400).json({ error: "Invalid model name" });
+      }
+  
+      // Fetch only ReceiptNo fields from the installments array
+      const response = await modelsMap[model].find({ID}, {
+        "installments": 1
+      });
+
+      if (response.length === 0) {
+        return res.status(404).json({ error: "Student not Found" });
+      }
+
+      
+  
+      // Extract only ReceiptNo values for the response
+      const receiptNumbers = response.map((doc: any) =>
+        doc.installments.map((inst: any) => inst)
+      );
+  
+      res.status(200).json(receiptNumbers);
+    } catch (error) {
+      res.status(500).json({ error });
+    }
+  }
+  
+  ,
   async exchangeInstallment(req: Request, res: Response) {
     try {
       const { sourceModel, targetModel, ID, DueNumber } = req.body;
@@ -341,12 +378,14 @@ const studentController = {
       sourceRecord.installments = sourceRecord.installments.filter(
         (installment: any) => installment.ReceiptNo !== DueNumber
       );
+      sourceRecord.Total -= parseFloat(installmentToMove.Amount);
       await sourceRecord.save();
 
       
 
       // Add the installment to the target model
       targetRecord.installments.push(installmentToMove);
+      targetRecord.Total += parseFloat(installmentToMove.Amount);
       await targetRecord.save();
 
       return res.status(200).json({
