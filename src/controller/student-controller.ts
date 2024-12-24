@@ -323,8 +323,6 @@ const studentController = {
         return res.status(404).json({ error: "Student not Found" });
       }
 
-      
-  
       // Extract only ReceiptNo values for the response
       const receiptNumbers = response.map((doc: any) =>
         doc.installments.map((inst: any) => inst)
@@ -334,8 +332,40 @@ const studentController = {
     } catch (error) {
       res.status(500).json({ error });
     }
-  }
+  },
+  async getAllDuesBasedOnId(req: Request, res: Response) {
+    try {
+      const { ID } = req.params;
   
+      // Fetch dues
+      const tutionFeeDues = await TutionFeeSchema.find({ ID }, { installments: 1 });
+      const hostelFeeDues = await HostelFeeSchema.find({ ID }, { installments: 1 });
+      const otherFeeDues = await OtherFromMSI.find({ ID }, { installments: 1 });
+  
+      // Helper function to process dues
+      const processDues = (dues: any[], type: string) =>
+        dues.flatMap((due) =>
+          due.installments.map((installment: any) => ({
+            ReceiptNo: installment.ReceiptNo,
+            Date: installment.Date,
+            Amount: installment.Amount,
+            _id: installment._id,
+            type,
+          }))
+        );
+  
+      // Process dues to the desired format
+      const formattedDues = [
+        ...processDues(tutionFeeDues, "TutionFee"),
+        ...processDues(hostelFeeDues, "HostelFee"),
+        ...processDues(otherFeeDues, "OtherFee"),
+      ];
+  
+      res.status(200).json(formattedDues);
+    } catch (error) {
+      res.status(500).json({ error });
+    }
+  }
   ,
   async exchangeInstallment(req: Request, res: Response) {
     try {
