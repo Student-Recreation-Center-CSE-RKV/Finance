@@ -97,7 +97,7 @@ v1Routes.get("/graph/batch", graphController.batchWiseTotalData);
 
 v1Routes.get("/graph/category/:batchYear", graphController.categoryWiseTotalData)
 v1Routes.get("/getDuesBasedOnFee/:model/:ID",studentController.getDuesBasedOnFee)
-
+v1Routes.get("/getAllDues/:ID",studentController.getAllDuesBasedOnId)
 
 
 v1Routes.put("/update/student/:id", studentController.updateStudent);
