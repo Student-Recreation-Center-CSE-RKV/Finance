@@ -356,9 +356,9 @@ const studentController = {
   
       // Process dues to the desired format
       const formattedDues = [
-        ...processDues(tutionFeeDues, "TutionFee"),
-        ...processDues(hostelFeeDues, "HostelFee"),
-        ...processDues(otherFeeDues, "OtherFee"),
+        ...processDues(tutionFeeDues, "TutionFeeSchema"),
+        ...processDues(hostelFeeDues, "HostelFeeSchema"),
+        ...processDues(otherFeeDues, "OtherFromMSI"),
       ];
   
       res.status(200).json(formattedDues);
@@ -367,6 +367,43 @@ const studentController = {
     }
   }
   ,
+  async removeInstallment(req: Request, res: Response) {
+    try {
+      const { model, ID, installmentId ,amount} = req.body; 
+      console.log(model,ID,installmentId,amount)
+      const modelsMap: any = {
+        TutionFeeSchema,
+        HostelFeeSchema,
+        OtherFromMSI,
+      };
+  
+      
+      if (!modelsMap[model]) {
+        return res.status(400).json({ error: "Invalid model name" });
+      }
+      const sch = await feeServices.getStudentSch(ID ? ID : "");
+      
+      const result = await modelsMap[model].updateOne(
+        { ID },
+        { $pull: { installments: { _id: installmentId } } } 
+      );
+      
+      if (result.modifiedCount === 0) {
+        return res.status(404).json({ error: "Installment not found or nothing to remove" });
+      }
+      const record = await modelsMap[model].findOne({ ID });
+      record.Total -= parseFloat(amount);
+      await record.save();
+
+      sch.FeePaidbyTheStudent-=parseFloat(amount);
+      sch.TotalFeePaid -= parseFloat(amount);
+      sch.RemainingBalance += parseFloat(amount);
+      await feeServices.updateStudentSch(ID ? ID : "", sch);
+      res.status(200).json({ message: "Installment removed successfully" });
+    } catch (error) {
+      res.status(500).json({ error });
+    }
+  },
   async exchangeInstallment(req: Request, res: Response) {
     try {
       const { sourceModel, targetModel, ID, DueNumber } = req.body;
