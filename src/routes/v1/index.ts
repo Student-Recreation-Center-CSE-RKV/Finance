@@ -101,6 +101,7 @@ v1Routes.get("/getAllDues/:ID",studentController.getAllDuesBasedOnId)
 
 
 v1Routes.put("/update/student/:id", studentController.updateStudent);
+v1Routes.delete("/delete/student/installment", studentController.removeInstallment);
 
 // v1Routes.put("/student/update/:id", studentController.updateStudent)
 v1Routes.put(
